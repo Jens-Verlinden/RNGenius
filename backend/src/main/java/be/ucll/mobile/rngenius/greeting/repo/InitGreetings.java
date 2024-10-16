@@ -15,7 +15,7 @@ public class InitGreetings {
     @PostConstruct
     public void insertGreeting() {
         if (greetingRepository.count() == 0) {
-            greetingRepository.save(new Greeting("Hello world!"));
+            greetingRepository.save(new Greeting("Hello World!"));
         };
     }
 }
