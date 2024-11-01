@@ -18,15 +18,44 @@ jobs:
         with:
           java-version: '17'  
 
+      - name: Add JWT secret
+        run: |
+          echo "package be.ucll.mobile.rngenius.auth.jwt;
+
+          import org.springframework.stereotype.Component;
+          
+          @Component
+          public class Secret {
+          
+              public static String getSecret () {
+                  return \"${JWT_KEY}\";
+              }
+          }" > backend/src/main/java/be/ucll/mobile/rngenius/auth/jwt/Secret.java
+
+        env:
+          JWT_KEY: ${{ secrets.JWT_KEY }}
+
+      - name: Update application.properties configuration to include secrets
+        run: |
+          echo "spring.datasource.url = jdbc:h2:file:./data/DB;NON_KEYWORDS=USER" > backend/src/main/resources/application.properties
+          echo "spring.datasource.driverClassName=org.h2.Driver" >> backend/src/main/resources/application.properties
+          echo "spring.datasource.username=${DB_USER}" >> backend/src/main/resources/application.properties
+          echo "spring.datasource.username=${DB_PASS}" >> backend/src/main/resources/application.properties
+          echo "spring.jpa.database-platform=org.hibernate.dialect.H2Dialect" >> backend/src/main/resources/application.properties
+          echo "spring.h2.console.enabled=true" >> backend/src/main/resources/application.properties
+          echo "spring.h2.console.path=/h2" >> backend/src/main/resources/application.properties
+          echo "spring.datasource.name=rngeniusDB" >> backend/src/main/resources/application.properties
+          echo "spring.jpa.hibernate.ddl-auto=update" >> backend/src/main/resources/application.properties
+          echo "spring.jpa.show-sql=true" >> backend/src/main/resources/application.properties
+
+        env:
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASS: ${{ secrets.DB_PASS }}
+
       - name: Run Unit Tests
         run: |
           cd backend
           mvn test
-
-      - name: Remove security configs for H2 database
-        run: |
-          cd backend
-          sed -i '/H2/d' ./src/main/java/group10/backend/auth/jwt/SecurityConfig.java
 
       - name: Delete previous maven package
         run: |          
