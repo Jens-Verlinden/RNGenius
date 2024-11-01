@@ -37,6 +37,7 @@ jobs:
 
       - name: Update application.properties configuration to include secrets
         run: |
+          touch backend/src/main/resources/application.properties
           echo "spring.datasource.url = jdbc:h2:file:./data/DB;NON_KEYWORDS=USER" > backend/src/main/resources/application.properties
           echo "spring.datasource.driverClassName=org.h2.Driver" >> backend/src/main/resources/application.properties
           echo "spring.datasource.username=${DB_USER}" >> backend/src/main/resources/application.properties
