@@ -15,14 +15,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
 import be.ucll.mobile.rngenius.auth.jwt.JwtUtil;
 import be.ucll.mobile.rngenius.auth.model.request.LoginReq;
+import be.ucll.mobile.rngenius.auth.model.request.RefreshReq;
 import be.ucll.mobile.rngenius.auth.model.response.ErrorRes;
 import be.ucll.mobile.rngenius.auth.model.response.LoginRes;
 import be.ucll.mobile.rngenius.auth.model.response.RefreshRes;
@@ -75,11 +73,10 @@ public class AuthRestController {
     }
 
     @PutMapping("/refresh")
-    public ResponseEntity<?> refresh(@RequestParam String refreshToken,
-            @RequestHeader("Authorization") String authorizationHeader){
+    public ResponseEntity<?> refresh(@RequestBody RefreshReq refreshReq) {
         try {
-            Long requesterId = jwtUtil.retrieveRequesterId(authorizationHeader);
-            User user = userService.checkRefreshToken(requesterId, refreshToken);
+            Long requesterId = jwtUtil.retrieveRequesterId(refreshReq.getAccessToken());
+            User user = userService.checkRefreshToken(requesterId, refreshReq.getRefreshToken());
             String token = jwtUtil.createToken(user);
             RefreshRes loginRes = new RefreshRes("Token refreshed...", token, user.id, user.getEmail());
             return ResponseEntity.ok(loginRes);

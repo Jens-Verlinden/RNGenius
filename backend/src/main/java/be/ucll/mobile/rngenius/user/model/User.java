@@ -1,9 +1,16 @@
 package be.ucll.mobile.rngenius.user.model;
 
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import be.ucll.mobile.rngenius.generator.model.Generator;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -13,7 +20,8 @@ import jakarta.validation.constraints.Pattern;
 public class User {
 
     @Id
-    public long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Long id;
 
     @NotBlank(message = "First name is required")
     private String firstName;
@@ -27,7 +35,11 @@ public class User {
 
     private String password;
 
-    private String refreshToken;
+    private String refreshToken;    
+
+    @JsonBackReference
+    @OneToMany(mappedBy = "user")
+    private List<Generator> generators;
 
     public User(String firstName, String lastName, String email, String password) throws UserException {
         this.firstName = firstName;
@@ -61,13 +73,29 @@ public class User {
         return refreshToken;
     }
 
+    public List<Generator> getGenerators() {
+        return generators;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setEmail(String email) throws UserException {
+        this.email = email;
+    }
+
     public void setPassword(String password) throws UserException {
         if (password == null || password.strip() == "") {
             throw new UserException("password", "Password is required");
         }
 
         if (password.length() < 8) {
-            throw new UserException("password", "Password is too short, it has to be at least 8 characters long");
+            throw new UserException("password", "Password is too short, it has to be at least 8 characters Long");
         }
 
         if (!password.matches(".*[A-Z].*")) {
@@ -87,7 +115,6 @@ public class User {
         }
 
         this.password = password;
-        
     }
 
     public void setPasswordBcrypt(String password) {
@@ -100,5 +127,9 @@ public class User {
         }
 
         this.refreshToken = refreshToken;
+    }
+
+    public void setGenerators(List<Generator> generators) {
+        this.generators = generators;
     }
 }

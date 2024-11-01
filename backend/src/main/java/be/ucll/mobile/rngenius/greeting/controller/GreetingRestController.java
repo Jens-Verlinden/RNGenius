@@ -14,8 +14,8 @@ import be.ucll.mobile.rngenius.greeting.model.Greeting;
 import be.ucll.mobile.rngenius.greeting.service.GreetingService;
 import be.ucll.mobile.rngenius.greeting.service.GreetingServiceException;
 
-@CrossOrigin(origins = "*")
 @RestController
+@CrossOrigin(origins = {"*"})
 @RequestMapping("/")
 public class GreetingRestController {
 

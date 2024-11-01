@@ -11,6 +11,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.impl.DefaultClaims;
 import jakarta.servlet.http.HttpServletRequest;
 
 @Component
@@ -82,7 +83,13 @@ public class JwtUtil {
     }
     public long retrieveRequesterId(String authorizationHeader) {
         String token = authorizationHeader.substring(7);
-        Claims claims = parseJwtClaims(token);
+        Claims claims;
+        try {
+            claims = jwtParser.parseClaimsJws(token).getBody();
+        }
+        catch (ExpiredJwtException ex) {
+            claims = (DefaultClaims) ex.getClaims();
+        }
 		return (int) claims.get("id");
     }
 }
