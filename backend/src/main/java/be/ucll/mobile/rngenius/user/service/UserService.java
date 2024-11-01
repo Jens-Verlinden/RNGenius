@@ -74,4 +74,16 @@ public class UserService {
 
         return user;
     }
+
+    public void changePassword(Long requesterId, String oldPassword, String newPassword) throws UserServiceException, UserException {
+        User user = getUserById(requesterId);
+
+        if (!bCryptPasswordEncoder.matches(oldPassword, user.getPassword())) {
+            throw new UserServiceException("user", "Invalid password");
+        }
+        
+        user.setPassword(newPassword);
+        user.setPasswordBcrypt(bCryptPasswordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
 }

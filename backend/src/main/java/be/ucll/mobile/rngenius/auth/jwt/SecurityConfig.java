@@ -46,7 +46,7 @@ public class SecurityConfig  {
             .disable())
         .authorizeRequests(requests -> requests
         .requestMatchers(toH2Console()).permitAll()
-        .requestMatchers("/auth/**", "/hello").permitAll()
+        .requestMatchers("/auth/login", "/auth/register", "/auth/refresh", "/hello").permitAll()
         .anyRequest().authenticated()).sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)        
         .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable())
