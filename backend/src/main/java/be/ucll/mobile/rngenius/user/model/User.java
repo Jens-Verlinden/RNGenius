@@ -95,7 +95,7 @@ public class User {
         }
 
         if (password.length() < 8) {
-            throw new UserException("password", "Password is too short, it has to be at least 8 characters Long");
+            throw new UserException("password", "Password is too short, it has to be at least 8 characters long");
         }
 
         if (!password.matches(".*[A-Z].*")) {

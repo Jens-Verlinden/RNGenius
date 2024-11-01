@@ -37,7 +37,8 @@ public class UserServiceTest {
     @BeforeEach
     public void setUp()  throws Exception {
         user = new User("John", "Doe", "john.doe@ucll.be", "JohnD123!");
-    }
+        user.id = (1L);
+    }   
 
     @Test
     void givenValidUserData_whenCreatingUser_thenUserCreatedSuccessfullyAndReturned() throws Exception {
@@ -133,7 +134,7 @@ public class UserServiceTest {
     void givenValidUser_whenSettingRefreshTokenOnLogin_thenRefreshTokenSet() throws Exception {
         // given
         String refreshToken = UUID.randomUUID().toString();
-        when(bCryptPasswordEncoder.encode(refreshToken)).thenReturn(refreshToken);
+        when(bCryptPasswordEncoder.encode(any(String.class))).thenReturn(refreshToken);
         when(userRepository.save(user)).thenReturn(user);
 
         // when
