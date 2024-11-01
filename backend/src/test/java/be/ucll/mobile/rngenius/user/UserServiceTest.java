@@ -173,4 +173,37 @@ public class UserServiceTest {
         assertEquals("user", ex.getField());
         assertEquals("Invalid refresh token", ex.getMessage());
     }
+
+    @Test
+    void givenValidOldPassword_whenChangingPassword_thenPasswordChangedSuccessfully() throws Exception {
+        // given
+        String oldPassword = "JohnD123!";
+        String newPassword = "NewPassword123!";
+        when(userRepository.findUserById(user.id)).thenReturn(user);
+        when(bCryptPasswordEncoder.matches(oldPassword, user.getPassword())).thenReturn(true);
+        when(bCryptPasswordEncoder.encode(newPassword)).thenReturn("ENCODED_NEW_PASSWORD");
+
+        // when
+        userService.changePassword(user.id, oldPassword, newPassword);
+
+        // then
+        verify(userRepository, times(1)).save(user);
+        assertEquals("ENCODED_NEW_PASSWORD", user.getPassword());
+    }
+
+    @Test
+    void givenInvalidOldPassword_whenChangingPassword_thenUserServiceExceptionIsThrown() {
+        // given
+        String oldPassword = "WrongPassword";
+        String newPassword = "NewPassword123!";
+        when(userRepository.findUserById(user.id)).thenReturn(user);
+        when(bCryptPasswordEncoder.matches(oldPassword, user.getPassword())).thenReturn(false);
+
+        // when
+        UserServiceException ex = assertThrows(UserServiceException.class, () -> userService.changePassword(user.id, oldPassword, newPassword));
+
+        // then
+        assertEquals("user", ex.getField());
+        assertEquals("Invalid password", ex.getMessage());
+    }
 }
