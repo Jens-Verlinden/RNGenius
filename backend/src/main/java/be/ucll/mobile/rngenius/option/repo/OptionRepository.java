@@ -7,5 +7,5 @@ import be.ucll.mobile.rngenius.option.model.Option;
 @Repository
 public interface OptionRepository extends JpaRepository<Option, Long> {
 
-    Option findOptionById(long id);
+    Option findOptionById(Long id);
 }

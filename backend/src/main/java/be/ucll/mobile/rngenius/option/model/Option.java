@@ -3,6 +3,8 @@ package be.ucll.mobile.rngenius.option.model;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import be.ucll.mobile.rngenius.generator.model.Generator;
+import be.ucll.mobile.rngenius.selection.model.Selection;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -11,6 +13,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 
@@ -35,6 +38,8 @@ public class Option {
     @JoinColumn(name = "generator_id")
     private Generator generator;
 
+    @OneToMany(mappedBy = "option", cascade = CascadeType.REMOVE)
+    private List<Selection> selections;
 
     public Option(String name, List<String> categories, String description) {
         this.name = name;
@@ -60,6 +65,10 @@ public class Option {
         return generator;
     }
 
+    public List<Selection> getSelections() {
+        return selections;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -78,5 +87,9 @@ public class Option {
 
     public void setGenerator(Generator generator) {
         this.generator = generator;
+    }
+
+    public void setSelections(List<Selection> selections) {
+        this.selections = selections;
     }
 }

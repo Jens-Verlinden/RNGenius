@@ -8,8 +8,10 @@ import org.springframework.stereotype.Service;
 import be.ucll.mobile.rngenius.user.model.User;
 import be.ucll.mobile.rngenius.user.model.UserException;
 import be.ucll.mobile.rngenius.user.repo.UserRepository;
+import jakarta.transaction.Transactional;
 
 @Service
+@Transactional
 public class UserService {
 
     @Autowired

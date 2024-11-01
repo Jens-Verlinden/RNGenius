@@ -2,6 +2,7 @@ package be.ucll.mobile.rngenius.generator.model;
 
 import java.util.List;
 import be.ucll.mobile.rngenius.option.model.Option;
+import be.ucll.mobile.rngenius.participant.model.Participant;
 import be.ucll.mobile.rngenius.user.model.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -34,6 +35,9 @@ public class Generator {
     @OneToMany(mappedBy = "generator", cascade = CascadeType.REMOVE)
     private List<Option> options;
 
+    @OneToMany(mappedBy = "generator", cascade = CascadeType.REMOVE)
+    private List<Participant> participants;
+
     public Generator(String title, int iconNumber) {
         this.title = title;
         this.iconNumber = iconNumber;
@@ -57,6 +61,10 @@ public class Generator {
         return options;
     }
 
+    public List<Participant> getParticipants() {
+        return participants;
+    }
+
     public void setTitle(String title) {
         this.title = title;
     }
@@ -71,5 +79,9 @@ public class Generator {
 
     public void setOptions(List<Option> options) {
         this.options = options;
+    }
+
+    public void setParticipants(List<Participant> participants) {
+        this.participants = participants;
     }
 }
