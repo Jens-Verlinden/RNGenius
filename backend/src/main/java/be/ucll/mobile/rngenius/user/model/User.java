@@ -2,6 +2,8 @@ package be.ucll.mobile.rngenius.user.model;
 
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import be.ucll.mobile.rngenius.generator.model.Generator;
 import be.ucll.mobile.rngenius.participant.model.Participant;
 import jakarta.persistence.Entity;
@@ -63,12 +65,12 @@ public class User {
         return email;
     }
 
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     public String getPassword() {
         return password;
     }
 
-    @JsonIgnore    
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     public String getRefreshToken() {
         return refreshToken;
     }

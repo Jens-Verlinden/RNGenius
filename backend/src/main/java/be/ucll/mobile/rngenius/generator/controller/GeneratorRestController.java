@@ -3,9 +3,9 @@ package be.ucll.mobile.rngenius.generator.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -55,33 +55,38 @@ public class GeneratorRestController {
     }
 
     @PostMapping("/add")
-    public void addGenerator(@RequestBody @Valid Generator generator, @RequestHeader("Authorization") String token) throws GeneratorServiceException, UserServiceException {
+    public ResponseEntity<String> addGenerator(@RequestBody @Valid Generator generator, @RequestHeader("Authorization") String token) throws GeneratorServiceException, UserServiceException {
         Long requesterId = jwtUtil.retrieveRequesterId(token);
         generatorService.addGenerator(generator, requesterId);
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/update/{id}")
-    public void updateGenerator(@PathVariable Long id, @RequestBody @Valid Generator generator, @RequestHeader("Authorization") String token) throws GeneratorServiceException, GeneratorServiceAuthorizationException, UserServiceException {
+    public ResponseEntity<String> updateGenerator(@PathVariable Long id, @RequestBody @Valid Generator generator, @RequestHeader("Authorization") String token) throws GeneratorServiceException, GeneratorServiceAuthorizationException, UserServiceException {
         Long requesterId = jwtUtil.retrieveRequesterId(token);
         generatorService.updateGenerator(id, generator, requesterId);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/delete/{id}")
-    public void deleteGenerator(@PathVariable Long id, @RequestHeader("Authorization") String token) throws GeneratorServiceException, GeneratorServiceAuthorizationException {
+    public ResponseEntity<String> deleteGenerator(@PathVariable Long id, @RequestHeader("Authorization") String token) throws GeneratorServiceException, GeneratorServiceAuthorizationException {
         Long requesterId = jwtUtil.retrieveRequesterId(token);
         generatorService.deleteGeneratorById(id, requesterId);
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/addOption/{generatorId}")
-    public void addOption(@PathVariable Long generatorId, @RequestBody @Valid Option option, @RequestHeader("Authorization") String token) throws GeneratorServiceException, GeneratorServiceAuthorizationException {
+    public ResponseEntity<String> addOption(@PathVariable Long generatorId, @RequestBody @Valid Option option, @RequestHeader("Authorization") String token) throws GeneratorServiceException, GeneratorServiceAuthorizationException {
         Long requesterId = jwtUtil.retrieveRequesterId(token);
         generatorService.addGeneratorOption(generatorId, option, requesterId);
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/deleteOption/{optionId}")
-    public void deleteOption(@PathVariable Long optionId, @RequestParam String category, @RequestHeader("Authorization") String token) throws GeneratorServiceException, GeneratorServiceAuthorizationException {
+    public ResponseEntity<String> deleteOption(@PathVariable Long optionId, @RequestParam String category, @RequestHeader("Authorization") String token) throws GeneratorServiceException, GeneratorServiceAuthorizationException {
         Long requesterId = jwtUtil.retrieveRequesterId(token);
         generatorService.deleteCategorizedGeneratorOption(optionId, category, requesterId);
+        return ResponseEntity.ok().build();
     }   
 
     @GetMapping("/generate/{id}")
@@ -91,33 +96,38 @@ public class GeneratorRestController {
     }
 
     @PutMapping("/favorise/{optionId}")
-    public void prioritiseOption(@PathVariable Long optionId, @RequestHeader("Authorization") String token) throws GeneratorServiceException, GeneratorServiceAuthorizationException {
+    public ResponseEntity<String> prioritiseOption(@PathVariable Long optionId, @RequestHeader("Authorization") String token) throws GeneratorServiceException, GeneratorServiceAuthorizationException {
         Long requesterId = jwtUtil.retrieveRequesterId(token);
         generatorService.favoriseOption(optionId, requesterId);
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/exclude/{optionId}")
-    public void excludeOption(@PathVariable Long optionId, @RequestHeader("Authorization") String token) throws GeneratorServiceException, GeneratorServiceAuthorizationException {
+    public ResponseEntity<String> excludeOption(@PathVariable Long optionId, @RequestHeader("Authorization") String token) throws GeneratorServiceException, GeneratorServiceAuthorizationException {
         Long requesterId = jwtUtil.retrieveRequesterId(token);
         generatorService.excludeOption(optionId, requesterId);
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/addParticipant/{generatorId}")
-    public void addParticipant(@PathVariable Long generatorId, @RequestParam String email, @RequestHeader("Authorization") String token) throws GeneratorServiceException, GeneratorServiceAuthorizationException, UserServiceException {
+    public ResponseEntity<String> addParticipant(@PathVariable Long generatorId, @RequestParam String email, @RequestHeader("Authorization") String token) throws GeneratorServiceException, GeneratorServiceAuthorizationException, UserServiceException {
         Long requesterId = jwtUtil.retrieveRequesterId(token);
         generatorService.addGeneratorParticipant(generatorId, email, requesterId);
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/removeParticipant/{generatorId}")
-    public void removeParticipant(@PathVariable Long generatorId, @RequestParam Long participantId, @RequestHeader("Authorization") String token) throws GeneratorServiceException, GeneratorServiceAuthorizationException, UserServiceException {
+    public ResponseEntity<String> removeParticipant(@PathVariable Long generatorId, @RequestParam Long participantId, @RequestHeader("Authorization") String token) throws GeneratorServiceException, GeneratorServiceAuthorizationException, UserServiceException {
         Long requesterId = jwtUtil.retrieveRequesterId(token);
         generatorService.removeGeneratorParticipant(generatorId, participantId, requesterId);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/leave/{generatorId}")
-    public void leaveGenerator(@PathVariable Long generatorId, @RequestHeader("Authorization") String token) throws GeneratorServiceException, GeneratorServiceAuthorizationException {
+    public ResponseEntity<String> leaveGenerator(@PathVariable Long generatorId, @RequestHeader("Authorization") String token) throws GeneratorServiceException, GeneratorServiceAuthorizationException {
         Long requesterId = jwtUtil.retrieveRequesterId(token);
         generatorService.leaveGenerator(generatorId, requesterId);
+        return ResponseEntity.ok().build();
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
