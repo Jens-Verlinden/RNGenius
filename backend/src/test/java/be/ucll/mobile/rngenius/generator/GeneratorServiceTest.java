@@ -424,6 +424,19 @@ public class GeneratorServiceTest {
     }
 
     @Test
+    void givenOwnerDeletingThemselves_whenDeletingGeneratorParticipant_thenGeneratorServiceAuthorizationExceptionIsThrown() throws Exception {
+        // given
+        when(generatorRepository.findGeneratorById(generator.id)).thenReturn(generator);
+
+        // when
+        GeneratorServiceException ex = assertThrows(GeneratorServiceException.class, () -> generatorService.removeGeneratorParticipant(generator.id, user1.id, user1.id));
+
+        // then
+        assertEquals("participant", ex.getField());
+        assertEquals("You cannot remove yourself from your own generator", ex.getMessage());
+    }
+
+    @Test
     void givenUnauthorizedRequesterId_whenDeletingGeneratorParticipant_thenGeneratorServiceAuthorizationExceptionIsThrown() throws Exception {
         // given
         when(generatorRepository.findGeneratorById(generator.id)).thenReturn(generator);
@@ -455,11 +468,11 @@ public class GeneratorServiceTest {
         when(generatorRepository.findGeneratorById(generator.id)).thenReturn(generator);
 
         // when
-        GeneratorServiceAuthorizationException ex = assertThrows(GeneratorServiceAuthorizationException.class, () -> generatorService.leaveGenerator(generator.id, user1.id));
+        GeneratorServiceException ex = assertThrows(GeneratorServiceException.class, () -> generatorService.leaveGenerator(generator.id, user1.id));
 
         // then
         assertEquals("generator", ex.getField());
-        assertEquals("You are not authorized to leave your own generator", ex.getMessage());
+        assertEquals("You cannot leave your own generator", ex.getMessage());
     }
 
     @Test

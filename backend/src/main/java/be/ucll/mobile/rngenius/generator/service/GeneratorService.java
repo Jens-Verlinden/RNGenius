@@ -228,6 +228,8 @@ public class GeneratorService {
 
         if (!generator.getUser().id.equals(requesterId)) {
             throw new GeneratorServiceAuthorizationException("generator", "You are not authorized to delete participants from this generator");
+        } else if (generator.getUser().id.equals(participantId)) {
+            throw new GeneratorServiceException("participant", "You cannot remove yourself from your own generator");
         }
 
         Participant participant = participantRepository.findParticipantByUserIdAndGeneratorId(participantId, generatorId);
@@ -243,7 +245,7 @@ public class GeneratorService {
         Generator generator = getGeneratorById(generatorId, requesterId);
 
         if (generator.getUser().id.equals(requesterId)) {
-            throw new GeneratorServiceAuthorizationException("generator", "You are not authorized to leave your own generator");
+            throw new GeneratorServiceException("generator", "You cannot leave your own generator");
         }
 
         Participant participant = participantRepository.findParticipantByUserIdAndGeneratorId(requesterId, generatorId);
