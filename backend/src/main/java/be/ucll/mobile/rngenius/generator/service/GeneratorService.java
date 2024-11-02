@@ -74,12 +74,12 @@ public class GeneratorService {
 
     }
 
-    public void updateGenerator(Generator generator, Long requesterId) throws GeneratorServiceException, GeneratorServiceAuthorizationException, UserServiceException {
+    public void updateGenerator(Long id, Generator generator, Long requesterId) throws GeneratorServiceException, GeneratorServiceAuthorizationException, UserServiceException {
         if (generator == null) {
             throw new GeneratorServiceException("generator", "Generator data is required");
         }
 
-        Generator existingGenerator = getGeneratorById(generator.id, requesterId);
+        Generator existingGenerator = getGeneratorById(id, requesterId);
 
         if (!existingGenerator.getUser().id.equals(requesterId)) {
             throw new GeneratorServiceAuthorizationException("generator", "You are not authorized to update this generator");
@@ -131,6 +131,7 @@ public class GeneratorService {
         if (option.getCategories().isEmpty()) {
             optionRepository.delete(option);
         } else {
+            System.out.println(option.getCategories());
             optionRepository.save(option);
         }
     }
@@ -173,17 +174,25 @@ public class GeneratorService {
         return validOptions.get(randomIndex);
     }
     
-    public void prioritiseOption(Long optionId, Long requesterId) throws GeneratorServiceException, GeneratorServiceAuthorizationException {
-        Selection selection = getSelectionByParticipantIdAndOptionId(requesterId, optionId);
-        selection.setExcluded(false);
-        selection.setFavorised(true);
+    public void favoriseOption(Long optionId, Long requesterId) throws GeneratorServiceException, GeneratorServiceAuthorizationException {
+        Selection selection = getSelectionByParticipantUserIdAndOptionId(requesterId, optionId);
+        if (!selection.getFavorised()) {
+            selection.setFavorised(true);
+            selection.setExcluded(false);
+        } else {
+            selection.setFavorised(false);
+        }
         selectionRepository.save(selection);
     }
 
     public void excludeOption(Long optionId, Long requesterId) throws GeneratorServiceException, GeneratorServiceAuthorizationException {
-        Selection selection = getSelectionByParticipantIdAndOptionId(requesterId, optionId);
-        selection.setFavorised(false);
-        selection.setExcluded(true);
+        Selection selection = getSelectionByParticipantUserIdAndOptionId(requesterId, optionId);
+        if (!selection.getExcluded()) {
+            selection.setFavorised(false);
+            selection.setExcluded(true);
+        } else {
+            selection.setExcluded(false);
+        }
         selectionRepository.save(selection);
     }
 
@@ -214,7 +223,7 @@ public class GeneratorService {
         }
     }
 
-    public void deleteGeneratorParticipant(Long generatorId, Long participantId, Long requesterId) throws GeneratorServiceException, GeneratorServiceAuthorizationException {
+    public void removeGeneratorParticipant(Long generatorId, Long participantId, Long requesterId) throws GeneratorServiceException, GeneratorServiceAuthorizationException {
         Generator generator = getGeneratorById(generatorId, requesterId);
 
         if (!generator.getUser().id.equals(requesterId)) {
@@ -252,8 +261,8 @@ public class GeneratorService {
         return option;
     }
 
-    private Selection getSelectionByParticipantIdAndOptionId(Long participantId, Long optionId) throws GeneratorServiceException {
-        Selection selection = selectionRepository.findSelectionByParticipantIdAndOptionId(participantId, optionId);
+    private Selection getSelectionByParticipantUserIdAndOptionId(Long participantId, Long optionId) throws GeneratorServiceException {
+        Selection selection = selectionRepository.findSelectionByParticipantUserIdAndOptionId(participantId, optionId);
 
         if (selection == null) {
             throw new GeneratorServiceException("selection", "No selection with this participant and option");

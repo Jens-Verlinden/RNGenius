@@ -23,11 +23,9 @@ public class Greeting {
         this.message = message;
     }
 
-    //Default constructor wordt gebruikt door JPA
     public Greeting() {}
 
     public String getMessage () {
         return message;
     }
-
 }

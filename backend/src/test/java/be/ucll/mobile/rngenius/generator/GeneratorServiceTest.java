@@ -1,6 +1,7 @@
 package be.ucll.mobile.rngenius.generator;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
@@ -69,10 +70,10 @@ public class GeneratorServiceTest {
         generator = new Generator();
         generator.id = 1L;
         generator.setUser(user1);
-        option1 = new Option("Option 1", List.of("Category1", "Category2"), "Description 1");
+        option1 = new Option("Option 1", new ArrayList<>(List.of("Category1", "Category2")), "Description 1");
         option1.id = 1L;
         option1.setGenerator(generator);
-        option2 = new Option("Option 2", List.of("Category1", "Category3"), "Description 2");
+        option2 = new Option("Option 2", new ArrayList<>(List.of("Category3", "Category4")), "Description 2");
         option2.id = 2L;
         option2.setGenerator(generator);
         generator.setOptions(List.of(option1, option2));
@@ -183,7 +184,7 @@ public class GeneratorServiceTest {
         // when
         generator.setTitle("New Title");
         generator.setIconNumber(2);
-        generatorService.updateGenerator(generator, user1.id);
+        generatorService.updateGenerator(generator.id, generator, user1.id);
 
         // then
         verify(generatorRepository, times(1)).save(generator);
@@ -195,7 +196,7 @@ public class GeneratorServiceTest {
         when(generatorRepository.findGeneratorById(generator.id)).thenReturn(generator);
 
         // when
-        GeneratorServiceAuthorizationException ex = assertThrows(GeneratorServiceAuthorizationException.class, () -> generatorService.updateGenerator(generator, user2.id));
+        GeneratorServiceAuthorizationException ex = assertThrows(GeneratorServiceAuthorizationException.class, () -> generatorService.updateGenerator(generator.id, generator, user2.id));
 
         // then
         assertEquals("generator", ex.getField());
@@ -254,7 +255,7 @@ public class GeneratorServiceTest {
     @Test
     void givenValidOptionIdCategoryAndRequesterId_whenDeletingCategorizedGeneratorOption_thenOptionDeleted() throws Exception {
         // given
-        option1.setCategories(List.of("category"));
+        option1.setCategories(new ArrayList<>(List.of("category")));
         when(optionRepository.findOptionById(option1.id)).thenReturn(option1);
 
         // when
@@ -267,7 +268,7 @@ public class GeneratorServiceTest {
     @Test
     void givenValidOptionIdCategoryAndRequesterId_whenDeletingCategorizedGeneratorOptionButStillCategoryRemaining_thenOptionCateryDeleted() throws Exception {
         // given
-        option1.setCategories(List.of("category1", "category2"));
+        option1.setCategories(new ArrayList<>(List.of("category1", "category2")));
         when(optionRepository.findOptionById(option1.id)).thenReturn(option1);
 
         // when
@@ -327,10 +328,10 @@ public class GeneratorServiceTest {
     @Test
     void givenValidOptionIdAndRequesterId_whenPrioritisingOption_thenOptionPrioritised() throws Exception {
         // given
-        when(selectionRepository.findSelectionByParticipantIdAndOptionId(user1.id, option1.id)).thenReturn(selection1);
+        when(selectionRepository.findSelectionByParticipantUserIdAndOptionId(user1.id, option1.id)).thenReturn(selection1);
 
         // when
-        generatorService.prioritiseOption(option1.id, user1.id);
+        generatorService.favoriseOption(option1.id, user1.id);
 
         // then
         verify(selectionRepository, times(1)).save(selection1);
@@ -341,7 +342,7 @@ public class GeneratorServiceTest {
     @Test
     void givenValidOptionIdAndRequesterId_whenExcludingOption_thenOptionExcluded() throws Exception {
         // given
-        when(selectionRepository.findSelectionByParticipantIdAndOptionId(user1.id, option1.id)).thenReturn(selection1);
+        when(selectionRepository.findSelectionByParticipantUserIdAndOptionId(user1.id, option1.id)).thenReturn(selection1);
 
         // when
         generatorService.excludeOption(option1.id, user1.id);
@@ -402,7 +403,7 @@ public class GeneratorServiceTest {
         when(participantRepository.findParticipantByUserIdAndGeneratorId(user2.id, generator.id)).thenReturn(participant2);
 
         // when
-        generatorService.deleteGeneratorParticipant(generator.id, user2.id, user1.id);
+        generatorService.removeGeneratorParticipant(generator.id, user2.id, user1.id);
 
         // then
         verify(participantRepository, times(1)).delete(participant2);
@@ -415,7 +416,7 @@ public class GeneratorServiceTest {
         when(participantRepository.findParticipantByUserIdAndGeneratorId(user2.id, generator.id)).thenReturn(null);
 
         // when
-        GeneratorServiceException ex = assertThrows(GeneratorServiceException.class, () -> generatorService.deleteGeneratorParticipant(generator.id, user2.id, user1.id));
+        GeneratorServiceException ex = assertThrows(GeneratorServiceException.class, () -> generatorService.removeGeneratorParticipant(generator.id, user2.id, user1.id));
 
         // then
         assertEquals("participant", ex.getField());
@@ -428,7 +429,7 @@ public class GeneratorServiceTest {
         when(generatorRepository.findGeneratorById(generator.id)).thenReturn(generator);
 
         // when
-        GeneratorServiceAuthorizationException ex = assertThrows(GeneratorServiceAuthorizationException.class, () -> generatorService.deleteGeneratorParticipant(generator.id, user2.id, user2.id));
+        GeneratorServiceAuthorizationException ex = assertThrows(GeneratorServiceAuthorizationException.class, () -> generatorService.removeGeneratorParticipant(generator.id, user2.id, user2.id));
 
         // then
         assertEquals("generator", ex.getField());
@@ -496,10 +497,10 @@ public class GeneratorServiceTest {
     @Test
     void givenValidParticipantIdAndOptionId_whenGettingSelectionByParticipantIdAndOptionId_thenSelectionReturned() throws Exception {
         // given
-        when(selectionRepository.findSelectionByParticipantIdAndOptionId(user1.id, option1.id)).thenReturn(selection1);
+        when(selectionRepository.findSelectionByParticipantUserIdAndOptionId(user1.id, option1.id)).thenReturn(selection1);
 
         // when
-        Method method = GeneratorService.class.getDeclaredMethod("getSelectionByParticipantIdAndOptionId", Long.class, Long.class);
+        Method method = GeneratorService.class.getDeclaredMethod("getSelectionByParticipantUserIdAndOptionId", Long.class, Long.class);
         method.setAccessible(true);
         Selection foundSelection = (Selection) method.invoke(generatorService, user1.id, option1.id);
 
@@ -511,10 +512,10 @@ public class GeneratorServiceTest {
     @Test
     void givenInvalidParticipantIdAndOptionId_whenGettingSelectionByParticipantIdAndOptionId_thenGeneratorServiceExceptionIsThrown() throws Exception {
         // given
-        when(selectionRepository.findSelectionByParticipantIdAndOptionId(user1.id, option1.id)).thenReturn(null);
+        when(selectionRepository.findSelectionByParticipantUserIdAndOptionId(user1.id, option1.id)).thenReturn(null);
 
         // when
-        Method method = GeneratorService.class.getDeclaredMethod("getSelectionByParticipantIdAndOptionId", Long.class, Long.class);
+        Method method = GeneratorService.class.getDeclaredMethod("getSelectionByParticipantUserIdAndOptionId", Long.class, Long.class);
         method.setAccessible(true);
 
         InvocationTargetException ex = assertThrows(InvocationTargetException.class, () -> method.invoke(generatorService, user1.id, option1.id));

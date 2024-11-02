@@ -1,7 +1,9 @@
 package be.ucll.mobile.rngenius.participant.model;
 
 import java.util.List;
-import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import be.ucll.mobile.rngenius.generator.model.Generator;
 import be.ucll.mobile.rngenius.selection.model.Selection;
 import be.ucll.mobile.rngenius.user.model.User;
@@ -20,16 +22,15 @@ public class Participant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
-
+    
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "generator_id")
     private Generator generator;
-
+    
     @OneToMany(mappedBy = "participant", cascade = CascadeType.REMOVE)
     private List<Selection> selections;
 
@@ -39,6 +40,7 @@ public class Participant {
         return user;
     }
 
+    @JsonIgnore
     public Generator getGenerator() {
         return generator;
     }

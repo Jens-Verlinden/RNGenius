@@ -1,10 +1,7 @@
 package be.ucll.mobile.rngenius.user.model;
 
 import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import be.ucll.mobile.rngenius.generator.model.Generator;
 import be.ucll.mobile.rngenius.participant.model.Participant;
 import jakarta.persistence.Entity;
@@ -37,12 +34,10 @@ public class User {
     private String password;
 
     private String refreshToken;    
-
-    @JsonBackReference
+    
     @OneToMany(mappedBy = "user")
     private List<Generator> generators;
 
-    @JsonBackReference
     @OneToMany(mappedBy = "user")
     private List<Participant> participants;
 
@@ -78,10 +73,12 @@ public class User {
         return refreshToken;
     }
 
+    @JsonIgnore
     public List<Generator> getGenerators() {
         return generators;
     }
 
+    @JsonIgnore
     public List<Participant> getParticipants() {
         return participants;
     }

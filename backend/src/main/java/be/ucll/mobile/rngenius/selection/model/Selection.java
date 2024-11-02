@@ -1,5 +1,7 @@
 package be.ucll.mobile.rngenius.selection.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import be.ucll.mobile.rngenius.option.model.Option;
 import be.ucll.mobile.rngenius.participant.model.Participant;
 import jakarta.persistence.Entity;
@@ -19,7 +21,7 @@ public class Selection {
     @ManyToOne
     @JoinColumn(name = "participant_id")
     private Participant participant;
-
+    
     @ManyToOne
     @JoinColumn(name = "option_id")
     private Option option;
@@ -30,6 +32,7 @@ public class Selection {
 
     public Selection() {}
 
+    @JsonIgnore
     public Participant getParticipant() {
         return participant;
     }

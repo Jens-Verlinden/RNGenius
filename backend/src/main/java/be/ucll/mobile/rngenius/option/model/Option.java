@@ -1,7 +1,7 @@
 package be.ucll.mobile.rngenius.option.model;
 
 import java.util.List;
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import be.ucll.mobile.rngenius.generator.model.Generator;
 import be.ucll.mobile.rngenius.selection.model.Selection;
 import jakarta.persistence.CascadeType;
@@ -33,11 +33,10 @@ public class Option {
 
     private String description;
 
-    @JsonBackReference
     @ManyToOne 
     @JoinColumn(name = "generator_id")
     private Generator generator;
-
+    
     @OneToMany(mappedBy = "option", cascade = CascadeType.REMOVE)
     private List<Selection> selections;
 
@@ -61,10 +60,12 @@ public class Option {
         return description;
     }
 
+    @JsonIgnore
     public Generator getGenerator() {
         return generator;
     }
 
+    @JsonIgnore
     public List<Selection> getSelections() {
         return selections;
     }
@@ -78,7 +79,7 @@ public class Option {
     }
 
     public void removeCategory(String category) {
-        this.categories = this.categories.stream().filter(c -> !c.equals(category)).toList();
+        this.categories.remove(category);
     }
 
     public void setDescription(String description) {
