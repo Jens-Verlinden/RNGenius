@@ -49,7 +49,6 @@ public class AuthRestController {
     public ResponseEntity<String> register(@RequestBody User user) throws UserServiceException, UserException {
         userService.addUser(user);
         return ResponseEntity.ok().build();
-
     }
 
     @PostMapping("/login")
