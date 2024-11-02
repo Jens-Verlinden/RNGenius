@@ -173,7 +173,7 @@ public class GeneratorServiceTest {
         Option option = new Option();
         option.id = (1L);
         option.setGenerator(generator);
-        option.setCategories(List.of("category"));
+        option.setCategories(new ArrayList<>(List.of("category")));
         when(optionRepository.findOptionById(option.id)).thenReturn(option);
 
         // when

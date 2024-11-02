@@ -69,7 +69,7 @@ public class Option {
     }
 
     public void removeCategory(String category) {
-        this.categories = this.categories.stream().filter(c -> !c.equals(category)).toList();
+        this.categories.remove(category);
     }
 
     public void setDescription(String description) {

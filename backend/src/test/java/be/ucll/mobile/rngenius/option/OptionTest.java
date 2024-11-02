@@ -22,7 +22,7 @@ public class OptionTest {
     private static Validator validator;
 
     String validName = "Option1";
-    List<String> validCategories = List.of("Category1", "Category2");
+    List<String> validCategories = new ArrayList<>(List.of("Category1", "Category2"));
     String validDescription = "This is a valid description";
 
     Option validOption;
