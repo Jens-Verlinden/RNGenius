@@ -544,6 +544,90 @@ public class GeneratorServiceTest {
     }
 
     @Test
+    void givenValidGeneratorIdCategoryAndRequesterId_whenPrioritisingCategory_thenOptionsPrioritised() throws Exception {
+        // given
+        option1.setCategories(List.of("Category1"));
+        option2.setCategories(List.of("Category1"));
+        when(generatorRepository.findGeneratorById(generator.id)).thenReturn(generator);
+        when(selectionRepository.findSelectionByParticipantUserIdAndOptionId(user1.id, option1.id)).thenReturn(selection1);
+        when(selectionRepository.findSelectionByParticipantUserIdAndOptionId(user1.id, option2.id)).thenReturn(selection2);
+
+        // when
+        generatorService.prioritiseCategory(generator.id, "Category1", user1.id);
+
+        // then
+        verify(selectionRepository, times(1)).save(selection1);
+        verify(selectionRepository, times(1)).save(selection2);
+        assertTrue(selection1.getFavorised());
+        assertFalse(selection1.getExcluded());
+        assertTrue(selection2.getFavorised());
+        assertFalse(selection2.getExcluded());
+    }
+
+    @Test
+    void givenAllOptionsAlreadyPrioritised_whenPrioritisingCategory_thenOptionsUnprioritised() throws Exception {
+        // given
+        option1.setCategories(List.of("Category1"));
+        option2.setCategories(List.of("Category1"));
+        selection1.setFavorised(true);
+        selection2.setFavorised(true);
+        when(generatorRepository.findGeneratorById(generator.id)).thenReturn(generator);
+        when(selectionRepository.findSelectionByParticipantUserIdAndOptionId(user1.id, option1.id)).thenReturn(selection1);
+        when(selectionRepository.findSelectionByParticipantUserIdAndOptionId(user1.id, option2.id)).thenReturn(selection2);
+
+        // when
+        generatorService.prioritiseCategory(generator.id, "Category1", user1.id);
+
+        // then
+        verify(selectionRepository, times(1)).save(selection1);
+        verify(selectionRepository, times(1)).save(selection2);
+        assertFalse(selection1.getFavorised());
+        assertFalse(selection2.getFavorised());
+    }
+
+    @Test
+    void givenValidGeneratorIdCategoryAndRequesterId_whenExcludingCategory_thenOptionsExcluded() throws Exception {
+        // given
+        option1.setCategories(List.of("Category1"));
+        option2.setCategories(List.of("Category1"));
+        when(generatorRepository.findGeneratorById(generator.id)).thenReturn(generator);
+        when(selectionRepository.findSelectionByParticipantUserIdAndOptionId(user1.id, option1.id)).thenReturn(selection1);
+        when(selectionRepository.findSelectionByParticipantUserIdAndOptionId(user1.id, option2.id)).thenReturn(selection2);
+
+        // when
+        generatorService.excludeCategory(generator.id, "Category1", user1.id);
+
+        // then
+        verify(selectionRepository, times(1)).save(selection1);
+        verify(selectionRepository, times(1)).save(selection2);
+        assertTrue(selection1.getExcluded());
+        assertFalse(selection1.getFavorised());
+        assertTrue(selection2.getExcluded());
+        assertFalse(selection2.getFavorised());
+    }
+
+    @Test
+    void givenAllOptionsAlreadyExcluded_whenExcludingCategory_thenOptionsUnexcluded() throws Exception {
+        // given
+        option1.setCategories(List.of("Category1"));
+        option2.setCategories(List.of("Category1"));
+        selection1.setExcluded(true);
+        selection2.setExcluded(true);
+        when(generatorRepository.findGeneratorById(generator.id)).thenReturn(generator);
+        when(selectionRepository.findSelectionByParticipantUserIdAndOptionId(user1.id, option1.id)).thenReturn(selection1);
+        when(selectionRepository.findSelectionByParticipantUserIdAndOptionId(user1.id, option2.id)).thenReturn(selection2);
+
+        // when
+        generatorService.excludeCategory(generator.id, "Category1", user1.id);
+
+        // then
+        verify(selectionRepository, times(1)).save(selection1);
+        verify(selectionRepository, times(1)).save(selection2);
+        assertFalse(selection1.getExcluded());
+        assertFalse(selection2.getExcluded());
+    }
+
+    @Test
     void givenValidOptionId_whenGettingOptionById_thenOptionReturned() throws Exception {
         // given
         when(optionRepository.findOptionById(option1.id)).thenReturn(option1);

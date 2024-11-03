@@ -290,6 +290,64 @@ public class GeneratorService {
         return results;
     }
 
+    public void prioritiseCategory(Long generatorId, String category, Long requesterId) throws GeneratorServiceException, GeneratorServiceAuthorizationException {
+        Generator generator = getGeneratorById(generatorId, requesterId);
+        List<Option> options = generator.getOptions();
+        boolean allFavorised = true;
+
+        for (Option option : options) {
+            if (option.getCategories().contains(category)) {
+                Selection selection = selectionRepository.findSelectionByParticipantUserIdAndOptionId(requesterId, option.id);
+                if (!selection.getFavorised()) {
+                    allFavorised = false;
+                    break;
+                }
+            }
+        }
+
+        for (Option option : options) {
+            if (option.getCategories().contains(category)) {
+                Selection selection = selectionRepository.findSelectionByParticipantUserIdAndOptionId(requesterId, option.id);
+                if (allFavorised) {
+                    selection.setFavorised(false);
+                } else {
+                    selection.setFavorised(true);
+                    selection.setExcluded(false);
+                }
+                selectionRepository.save(selection);
+            }
+        }
+    }
+
+    public void excludeCategory(Long generatorId, String category, Long requesterId) throws GeneratorServiceException, GeneratorServiceAuthorizationException {
+        Generator generator = getGeneratorById(generatorId, requesterId);
+        List<Option> options = generator.getOptions();
+        boolean allExcluded = true;
+
+        for (Option option : options) {
+            if (option.getCategories().contains(category)) {
+                Selection selection = selectionRepository.findSelectionByParticipantUserIdAndOptionId(requesterId, option.id);
+                if (!selection.getExcluded()) {
+                    allExcluded = false;
+                    break;
+                }
+            }
+        }
+
+        for (Option option : options) {
+            if (option.getCategories().contains(category)) {
+                Selection selection = selectionRepository.findSelectionByParticipantUserIdAndOptionId(requesterId, option.id);
+                if (allExcluded) {
+                    selection.setExcluded(false);
+                } else {
+                    selection.setExcluded(true);
+                    selection.setFavorised(false);
+                }
+                selectionRepository.save(selection);
+            }
+        }
+    }
+
     private Option getOptionById(Long optionId) throws GeneratorServiceException {
         Option option = optionRepository.findOptionById(optionId);
 

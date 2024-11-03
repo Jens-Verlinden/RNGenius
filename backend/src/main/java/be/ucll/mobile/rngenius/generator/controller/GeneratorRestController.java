@@ -144,6 +144,20 @@ public class GeneratorRestController {
         return generatorService.getMyNotifiedResults(requesterId);
     }
 
+    @PutMapping("/favoriseCategory/{generatorId}")
+    public ResponseEntity<String> prioritiseCategory(@PathVariable Long generatorId, @RequestParam String category, @RequestHeader("Authorization") String token) throws GeneratorServiceException, GeneratorServiceAuthorizationException {
+        Long requesterId = jwtUtil.retrieveRequesterId(token);
+        generatorService.prioritiseCategory(generatorId, category, requesterId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/excludeCategory/{generatorId}")
+    public ResponseEntity<String> excludeCategory(@PathVariable Long generatorId, @RequestParam String category, @RequestHeader("Authorization") String token) throws GeneratorServiceException, GeneratorServiceAuthorizationException {
+        Long requesterId = jwtUtil.retrieveRequesterId(token);
+        generatorService.excludeCategory(generatorId, category, requesterId);
+        return ResponseEntity.ok().build();
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({ MethodArgumentNotValidException.class})
     public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
