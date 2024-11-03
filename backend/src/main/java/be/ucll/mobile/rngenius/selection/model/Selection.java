@@ -1,15 +1,20 @@
 package be.ucll.mobile.rngenius.selection.model;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import be.ucll.mobile.rngenius.option.model.Option;
 import be.ucll.mobile.rngenius.participant.model.Participant;
+import be.ucll.mobile.rngenius.result.model.Result;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 
 @Entity(name = "selections")
 public class Selection {
@@ -17,6 +22,10 @@ public class Selection {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
+
+    boolean favorised;
+
+    boolean excluded;
 
     @ManyToOne
     @JoinColumn(name = "participant_id")
@@ -26,11 +35,18 @@ public class Selection {
     @JoinColumn(name = "option_id")
     private Option option;
 
-    boolean favorised;
-
-    boolean excluded;
+    @OneToMany(mappedBy = "selection", cascade = CascadeType.REMOVE)
+    private List<Result> results;
 
     public Selection() {}
+
+    public boolean getFavorised() {
+        return favorised;
+    }
+
+    public boolean getExcluded() {
+        return excluded;
+    }
 
     @JsonIgnore
     public Participant getParticipant() {
@@ -41,12 +57,17 @@ public class Selection {
         return option;
     }
 
-    public boolean getFavorised() {
-        return favorised;
+    @JsonIgnore
+    public List<Result> getResults() {
+        return results;
     }
 
-    public boolean getExcluded() {
-        return excluded;
+    public void setFavorised(boolean favorised) {
+        this.favorised = favorised;
+    }
+
+    public void setExcluded(boolean excluded) {
+        this.excluded = excluded;
     }
 
     public void setParticipant(Participant participant) {
@@ -57,11 +78,7 @@ public class Selection {
         this.option = option;
     }
 
-    public void setFavorised(boolean favorised) {
-        this.favorised = favorised;
-    }
-
-    public void setExcluded(boolean excluded) {
-        this.excluded = excluded;
+    public void setResults(List<Result> results) {
+        this.results = results;
     }
 }
