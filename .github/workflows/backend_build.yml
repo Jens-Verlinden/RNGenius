@@ -43,7 +43,7 @@ jobs:
           echo "spring.h2.console.enabled=true" >> backend/src/main/resources/application.properties
           echo "spring.h2.console.path=/h2" >> backend/src/main/resources/application.properties
           echo "spring.datasource.name=rngeniusDB" >> backend/src/main/resources/application.properties
-          echo "spring.jpa.hibernate.ddl-auto=update" >> backend/src/main/resources/application.properties
+          echo "spring.jpa.hibernate.ddl-auto=create" >> backend/src/main/resources/application.properties
           echo "spring.jpa.show-sql=true" >> backend/src/main/resources/application.properties
 
         env:
