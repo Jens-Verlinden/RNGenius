@@ -62,7 +62,7 @@ jobs:
         run: |
             gh api \
             --method DELETE \
-            /orgs/JensVerlinden-UCLL/packages/maven/ be.ucll.mobile.rngenius
+            /orgs/JensVerlinden-UCLL/packages/maven/be.ucll.mobile.rngenius
         env:
           GH_TOKEN: ${{ github.token }}
 
