@@ -32,4 +32,4 @@ jobs:
            app-name: 'RNGenius-Backend'
            slot-name: 'Production'
            package: rngenius-0.0.1-${{env.DATE}}-1.jar
-           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_EF4469EC3B2740E58B7A4FA30D710154 }}
+           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_A9D99599FC5045658C59CF57377B8158 }}
