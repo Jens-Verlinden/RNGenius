@@ -1,8 +1,5 @@
 name: Build RNGenius Backend - Team 3
 on:
-  push:
-    branches: [ main ]
-    paths: 'backend/**'
   workflow_dispatch:
   
 jobs:
@@ -63,12 +60,4 @@ jobs:
           cd backend
           mvn -DskipTests deploy
         env:
-          GITHUB_TOKEN: ${{ github.token }}
-
-      
-      - uses: actions/delete-package-versions@v5
-        with:
-          package-name: 'be.ucll.mobile.rngenius'
-          package-type: 'maven'
-          min-versions-to-keep: 1
-          
+          GITHUB_TOKEN: ${{ github.token }}         
