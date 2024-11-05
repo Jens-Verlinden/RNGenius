@@ -108,7 +108,7 @@
         <repository>
             <id>github</id>
             <name>GitHub Mobile Applications Apache Maven Packages</name>
-            <url>https://maven.pkg.github.com/WAAAAA/WAAAA</url>
+            <url>https://maven.pkg.github.com/JensVerlinden-UCLL/RNGenius</url>
         </repository>
     </distributionManagement>
 
