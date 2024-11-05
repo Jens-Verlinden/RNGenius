@@ -58,18 +58,17 @@ jobs:
           cd backend
           mvn test
 
-      - name: Delete old package
-        run: |
-            gh api \
-            --method DELETE \
-            /orgs/JensVerlinden-UCLL/packages/maven/be.ucll.mobile.rngenius
-        env:
-          GH_TOKEN: ${{ github.token }}
-
       - name: Publish to GitHub Packages
         run: |
           cd backend
           mvn -DskipTests deploy
         env:
           GITHUB_TOKEN: ${{ github.token }}
+
+      
+      - uses: actions/delete-package-versions@v5
+        with:
+          package-name: 'be.ucll.mobile.rngenius'
+          package-type: 'maven'
+          min-versions-to-keep: 1
           
