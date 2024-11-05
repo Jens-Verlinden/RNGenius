@@ -16,20 +16,20 @@ jobs:
 
     steps:
        - name: Download metadata from Github Packages
-         run: curl -O -L https://_:${{ github.token }}@maven.pkg.github.com/WAAAAA/WAAAA/be/ucll/mobile/rngenius/0.0.1-SNAPSHOT/maven-metadata.xml 
+         run: curl -O -L https://_:${{ github.token }}@maven.pkg.github.com/JensVerlinden-UCLL/RNGenius/be/ucll/mobile/rngenius/0.0.1-SNAPSHOT/maven-metadata.xml 
        
        - name: Set the date in an environment variable
          id: date
          run: echo "DATE=$(grep -o -m 1 '[0-9]\{8\}\.[0-9]\{6\}' maven-metadata.xml  | head -n 1)" >> $GITHUB_ENV
 
        - name: Download .jar-file from Github Packages
-         run: curl -O -L https://_:${{ github.token }}@maven.pkg.github.com/WAAAA/WAAAA/be/ucll/mobile/rngenius/0.0.1-SNAPSHOT/rngenius-0.0.1-${{env.DATE}}-1.jar
+         run: curl -O -L https://_:${{ github.token }}@maven.pkg.github.com/JensVerlinden-UCLL/RNGenius/be/ucll/mobile/rngenius/0.0.1-SNAPSHOT/rngenius-0.0.1-${{env.DATE}}-1.jar
          
        - name: Deploy to Azure Web App
          id: deploy-to-webapp
          uses: azure/webapps-deploy@v2
          with:
-           app-name: 'rengenius'
+           app-name: 'RNGenius-Backend'
            slot-name: 'Production'
            package: rngenius-0.0.1-${{env.DATE}}-1.jar
            publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_EF4469EC3B2740E58B7A4FA30D710154 }}
