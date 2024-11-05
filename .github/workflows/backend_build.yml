@@ -62,9 +62,7 @@ jobs:
         with:
           package-name: 'be.ucll.mobile.rngenius'
           package-type: 'maven'
-          token: ${{ secrets.PAT }}
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+          token: ${{ github.token }}
 
       - name: Publish to GitHub Packages
         run: |
