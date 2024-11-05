@@ -130,4 +130,19 @@ public class UserService {
         user.setPasswordBcrypt(bCryptPasswordEncoder.encode(newPassword));
         userRepository.save(user);
     }
+
+    @Transactional
+    public void logoutAllDevices(Long requesterId) throws UserServiceException {
+        User user = getUserById(requesterId);
+        String refreshToken = UUID.randomUUID().toString();
+        user.setPasswordBcrypt(bCryptPasswordEncoder.encode(user.getPassword()));
+        try {
+            user.setRefreshToken(encrypt(refreshToken));
+        } catch (Exception e) {
+            System.out.println(e);
+            throw new UserServiceException("refreshToken", "Error encrypting refresh token");
+        }
+        
+        userRepository.save(user);
+    }
 }
