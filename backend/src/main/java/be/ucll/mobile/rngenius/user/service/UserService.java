@@ -1,9 +1,14 @@
 package be.ucll.mobile.rngenius.user.service;
 
 import java.util.UUID;
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
+import java.util.Arrays;
+import java.util.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import be.ucll.mobile.rngenius.auth.jwt.Secret;
 import be.ucll.mobile.rngenius.user.model.User;
 import be.ucll.mobile.rngenius.user.model.UserException;
 import be.ucll.mobile.rngenius.user.repo.UserRepository;
@@ -18,8 +23,33 @@ public class UserService {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    protected String ALGORITHM = "AES";
+    protected byte[] KEY = Secret.getSecret() != null ? Arrays.copyOf(Secret.getSecret().getBytes(), 32) : new byte[32];
+
     public UserService() {}
-    
+
+    protected String encrypt(String value) throws Exception {
+        SecretKeySpec keySpec = new SecretKeySpec(KEY, ALGORITHM);
+        Cipher cipher = Cipher.getInstance(ALGORITHM);
+        cipher.init(Cipher.ENCRYPT_MODE, keySpec);
+        if (value == null) {
+            return null;
+        }
+        byte[] encrypted = cipher.doFinal(value.getBytes());
+        return Base64.getEncoder().encodeToString(encrypted);
+    }
+
+    protected String decrypt(String encrypted) throws Exception {
+        SecretKeySpec keySpec = new SecretKeySpec(KEY, ALGORITHM);
+        Cipher cipher = Cipher.getInstance(ALGORITHM);
+        cipher.init(Cipher.DECRYPT_MODE, keySpec);
+        if (encrypted == null) {
+            return null;
+        }
+        byte[] original = cipher.doFinal(Base64.getDecoder().decode(encrypted));
+        return new String(original);
+    }
+
     @Transactional
     public User getUserByEmail(String email) throws UserServiceException {
         User user = userRepository.findUserByEmail(email);
@@ -54,16 +84,22 @@ public class UserService {
 
         String refreshToken = UUID.randomUUID().toString();
         user.setPasswordBcrypt(bCryptPasswordEncoder.encode(user.getPassword()));
-        user.setRefreshToken(bCryptPasswordEncoder.encode(refreshToken));
+        try {
+            user.setRefreshToken(encrypt(refreshToken));
+        } catch (Exception e) {
+            System.out.println(e);
+            throw new UserServiceException("refreshToken", "Error encrypting refresh token");
+        }
         
         userRepository.save(user);
-    };  
+    }
 
-    public User setRefreshTokenOnLogin(User user) throws UserException {
-        String refreshToken = UUID.randomUUID().toString();
-        user.setRefreshToken(bCryptPasswordEncoder.encode(refreshToken));
-        userRepository.save(user);
-        user.setRefreshToken(refreshToken);
+    public User setRefreshTokenOnLogin(User user) throws UserServiceException, UserException {
+        try {
+            user.setRefreshToken(decrypt(user.getRefreshToken()));
+        } catch (Exception e) {
+            throw new UserServiceException("refreshToken", "Error encrypting refresh token");
+        }
         return user;
     }
 
@@ -71,8 +107,12 @@ public class UserService {
     public User checkRefreshToken(Long requesterId, String refreshToken) throws UserServiceException {
         User user = getUserById(requesterId);
 
-        if (!bCryptPasswordEncoder.matches(refreshToken, user.getRefreshToken())) {
-            throw new UserServiceException("user", "Invalid refresh token");
+        try {
+            if (!refreshToken.equals(decrypt(user.getRefreshToken()))) {
+                throw new UserServiceException("user", "Invalid refresh token");
+            }
+        } catch (Exception e) {
+            throw new UserServiceException("user", e.getMessage());
         }
 
         return user;
