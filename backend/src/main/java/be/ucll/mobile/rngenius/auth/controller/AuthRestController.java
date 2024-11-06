@@ -61,7 +61,7 @@ public class AuthRestController {
             User loggedInUser = userService.getUserByEmail(email);
             User user = userService.setRefreshTokenOnLogin(loggedInUser);
             String token = jwtUtil.createToken(user);
-            LoginRes loginRes = new LoginRes("Authentication successful...", token, user.getRefreshToken(), user.id, user.getEmail());
+            LoginRes loginRes = new LoginRes("Authentication successful...", token, user.getRefreshToken(), user.id, user.getEmail(), user.getFirstName(), user.getLastName());
             return ResponseEntity.ok(loginRes);
 
         } catch (BadCredentialsException e){
