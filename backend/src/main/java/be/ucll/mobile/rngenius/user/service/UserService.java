@@ -52,7 +52,7 @@ public class UserService {
 
     @Transactional
     public User getUserByEmail(String email) throws UserServiceException {
-        User user = userRepository.findUserByEmail(email);
+        User user = userRepository.findUserByEmailIgnoreCase(email);
 
         if (user == null) {
             throw new UserServiceException("user", "No user with this email");
@@ -78,7 +78,7 @@ public class UserService {
             throw new UserServiceException("user", "User data is required");
         }
 
-        if (userRepository.findUserByEmail(user.getEmail()) != null) {
+        if (userRepository.findUserByEmailIgnoreCase(user.getEmail()) != null) {
             throw new UserServiceException("user", "User with this email already exists");
         }
 
