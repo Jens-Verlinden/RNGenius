@@ -108,6 +108,17 @@ public class GeneratorService {
 
         Generator generator = getGeneratorById(generatorId, requesterId);
 
+        // if the generator already has an option with the same name, then edit the existing option
+        if (generator.getOptions() != null && generator.getOptions().stream().anyMatch(o -> o.getName().equals(option.getName()))) {
+            Option existingOption = generator.getOptions().stream().filter(o -> o.getName().equals(option.getName())).findFirst().get();
+
+            option.getCategories().stream().filter(c -> !existingOption.getCategories().contains(c)).forEach(c -> existingOption.addCategory(c));
+            existingOption.setDescription(option.getDescription());
+
+            optionRepository.save(existingOption);
+            return;
+        }
+
         option.setGenerator(generator);
         optionRepository.save(option);
 

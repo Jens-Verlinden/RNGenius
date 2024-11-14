@@ -243,6 +243,43 @@ public class GeneratorServiceTest {
     }
 
     @Test
+    void givenValidGeneratorIdOptionAndRequesterIdAndOptionWithNameAlreadyExist_whenAddingGeneratorOption_thenOptionDescriotpionIsOverwrittenAndNewCategroiesAreAdded() throws Exception {
+        // given
+        Option oldOption = new Option();
+        oldOption.id = (1L);
+        oldOption.setName("cake");
+        oldOption.setDescription("i love cake");
+        oldOption.setCategories(new ArrayList<>(List.of("dessert")));
+
+        generator.setOptions(new ArrayList<>(List.of(oldOption)));
+
+        Option option = new Option();
+        option.id = (2L);
+        option.setName("cake");
+        option.setDescription("i hate cake");
+        option.setCategories(new ArrayList<>(List.of("food")));
+
+        Option newOption = new Option();
+        newOption.id = (1L);
+        newOption.setName("cake");
+        newOption.setDescription("i hate cake");
+        newOption.setCategories(new ArrayList<>(List.of("dessert", "food")));
+
+        when(generatorRepository.findGeneratorById(generator.id)).thenReturn(generator);
+        when(optionRepository.save(oldOption)).thenReturn(newOption);
+
+        // when
+        generatorService.addGeneratorOption(generator.id, option, user.id);
+
+        // then
+        verify(optionRepository, times(1)).save(oldOption);
+        assertEquals("i hate cake", newOption.getDescription());
+        assertEquals(2, newOption.getCategories().size());
+        assertEquals("dessert", newOption.getCategories().get(0));
+        assertEquals("food", newOption.getCategories().get(1));
+    }
+
+    @Test
     void givenNullOption_whenAddingGeneratorOption_thenGeneratorServiceExceptionIsThrown() {
         // when
         GeneratorServiceException ex = assertThrows(GeneratorServiceException.class, () -> generatorService.addGeneratorOption(generator.id, null, user1.id));
