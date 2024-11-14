@@ -25,7 +25,7 @@ public class CustomUserDetailsServiceTest {
     @Test
     void givenEmailOfExistingUser_whenGettingUserDetails_thenUserDetailsAreReturned() throws Exception {
         // given
-        when(userRepository.findUserByEmail("john.doe@ucll.be")).thenReturn(
+        when(userRepository.findUserByEmailIgnoreCase("john.doe@ucll.be")).thenReturn(
                 new User("john", "doe", "john.doe@ucll.be", "John123!"));
 
         // when

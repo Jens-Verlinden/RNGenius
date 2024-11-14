@@ -68,6 +68,10 @@ public class Option {
         this.categories = categories;
     }
 
+    public void addCategory(String category) {
+        this.categories.add(category);
+    }
+
     public void removeCategory(String category) {
         this.categories.remove(category);
     }
