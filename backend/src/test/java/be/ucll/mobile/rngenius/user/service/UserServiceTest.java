@@ -43,14 +43,13 @@ public class UserServiceTest {
         user.id = 1L;
         user.setRefreshToken("ESQn4j4Abl4YIc5R6Xyn+g==");
         String secretValue = "TESTTESTTESTTESTTESTTESTTESTTEST";
-        userService.KEY = Arrays.copyOf(secretValue.getBytes(), 32);   
-        
+        userService.KEY = Arrays.copyOf(secretValue.getBytes(), 32);    
     }
 
     @Test
     void givenValidUserData_whenCreatingUser_thenUserCreatedSuccessfullyAndReturned() throws Exception {
         // given
-        when(userRepository.findUserByEmail(user.getEmail())).thenReturn(null);
+        when(userRepository.findUserByEmailIgnoreCase(user.getEmail())).thenReturn(null);
         when(bCryptPasswordEncoder.encode(any(String.class))).thenReturn("SECRET");
         when(userRepository.save(user)).thenReturn(user);
 
@@ -75,7 +74,7 @@ public class UserServiceTest {
     @Test
     void givenExistingEmail_whenCreatingUser_thenUserServiceExceptionIsThrown() {
         // given
-        when(userRepository.findUserByEmail(user.getEmail())).thenReturn(user);
+        when(userRepository.findUserByEmailIgnoreCase(user.getEmail())).thenReturn(user);
 
         // when
         UserServiceException ex = assertThrows(UserServiceException.class, () -> userService.addUser(user));
@@ -88,7 +87,7 @@ public class UserServiceTest {
     @Test
     void givenValidEmail_whenGettingUserByEmail_thenUserReturned() throws UserServiceException {
         // given
-        when(userRepository.findUserByEmail(user.getEmail())).thenReturn(user);
+        when(userRepository.findUserByEmailIgnoreCase(user.getEmail())).thenReturn(user);
 
         // when
         User foundUser = userService.getUserByEmail(user.getEmail());
@@ -101,7 +100,7 @@ public class UserServiceTest {
     @Test
     void givenInvalidEmail_whenGettingUserByEmail_thenUserServiceExceptionIsThrown() {
         // given
-        when(userRepository.findUserByEmail(user.getEmail())).thenReturn(null);
+        when(userRepository.findUserByEmailIgnoreCase(user.getEmail())).thenReturn(null);
 
         // when
         UserServiceException ex = assertThrows(UserServiceException.class, () -> userService.getUserByEmail(user.getEmail()));

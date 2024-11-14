@@ -28,7 +28,7 @@ public class LoginResTest {
     String validFirstName = "firstName";
     String validLastName = "lastName";
 
-    LoginRes validLoginRes;;
+    LoginRes validLoginRes;
 
     @BeforeAll
     public static void createValidator() {
