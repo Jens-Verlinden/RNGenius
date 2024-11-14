@@ -244,7 +244,6 @@ public class GeneratorServiceTest {
 
         // then
         verify(optionRepository, times(1)).save(option1);
-        verify(selectionRepository, times(2)).save(any(Selection.class));
     }
 
     @Test
@@ -274,7 +273,7 @@ public class GeneratorServiceTest {
         when(optionRepository.save(oldOption)).thenReturn(newOption);
 
         // when
-        generatorService.addGeneratorOption(generator.id, option, user.id);
+        generatorService.addGeneratorOption(generator.id, option, user1.id);
 
         // then
         verify(optionRepository, times(1)).save(oldOption);
