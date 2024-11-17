@@ -1,11 +1,11 @@
 package be.ucll.mobile.rngenius.user.model;
 
 import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import be.ucll.mobile.rngenius.generator.model.Generator;
+import be.ucll.mobile.rngenius.participant.model.Participant;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -36,10 +36,12 @@ public class User {
     private String password;
 
     private String refreshToken;    
-
-    @JsonBackReference
+    
     @OneToMany(mappedBy = "user")
     private List<Generator> generators;
+
+    @OneToMany(mappedBy = "user")
+    private List<Participant> participants;
 
     public User(String firstName, String lastName, String email, String password) throws UserException {
         this.firstName = firstName;
@@ -73,8 +75,14 @@ public class User {
         return refreshToken;
     }
 
+    @JsonIgnore
     public List<Generator> getGenerators() {
         return generators;
+    }
+
+    @JsonIgnore
+    public List<Participant> getParticipants() {
+        return participants;
     }
 
     public void setFirstName(String firstName) {
@@ -131,5 +139,9 @@ public class User {
 
     public void setGenerators(List<Generator> generators) {
         this.generators = generators;
+    }
+
+    public void setParticipants(List<Participant> participants) {
+        this.participants = participants;
     }
 }

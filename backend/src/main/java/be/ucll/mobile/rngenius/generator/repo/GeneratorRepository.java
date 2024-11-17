@@ -8,7 +8,7 @@ import be.ucll.mobile.rngenius.generator.model.Generator;
 @Repository
 public interface GeneratorRepository extends JpaRepository<Generator, Long> {
 
-    Generator findGeneratorById(long id);
+    Generator findGeneratorById(Long id);
 
     List<Generator> findGeneratorsByUserId(Long userId);
 

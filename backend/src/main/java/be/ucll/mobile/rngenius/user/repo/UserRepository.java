@@ -8,7 +8,7 @@ import be.ucll.mobile.rngenius.user.model.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    User findUserById(long id);
+    User findUserById(Long id);
 
     User findUserByEmailIgnoreCase(String email);
 }
