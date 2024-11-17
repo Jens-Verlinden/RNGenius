@@ -322,6 +322,18 @@ public class GeneratorServiceTest {
     }
 
     @Test 
+    void givenValidOptionId_whenPurgingOption_thenOptionDeleted() throws Exception {
+        // given
+        when(optionRepository.findOptionById(option1.id)).thenReturn(option1);
+
+        // when
+        generatorService.purgeGeneratorOption(option1.id, user1.id);
+
+        // then
+        verify(optionRepository, times(1)).delete(option1);
+    }
+
+    @Test 
     void givenUnauthorizedRequesterId_whenDeletingCategorizedGeneratorOption_thenGeneratorServiceAuthorizationExceptionIsThrown() throws Exception {
         // given
         option1.setCategories(List.of("category"));

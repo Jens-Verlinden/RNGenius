@@ -151,6 +151,16 @@ public class GeneratorService {
         }
     }
 
+    public void purgeGeneratorOption(Long optionId, Long requesterId) throws GeneratorServiceException, GeneratorServiceAuthorizationException {
+        Option option = getOptionById(optionId);
+
+        if (!option.getGenerator().getUser().id.equals(requesterId)) {
+            throw new GeneratorServiceAuthorizationException("option", "You are not authorized to delete this option");
+        }
+
+        optionRepository.delete(option);
+    }
+
     public Option generateOption(Long generatorId, Long requesterId) throws GeneratorServiceException, GeneratorServiceAuthorizationException {
         Generator generator = getGeneratorById(generatorId, requesterId);
 
