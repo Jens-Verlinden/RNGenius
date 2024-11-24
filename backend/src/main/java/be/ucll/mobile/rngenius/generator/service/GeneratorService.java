@@ -55,7 +55,19 @@ public class GeneratorService {
     }
 
     public List<Generator> getMyGenerators(Long requesterId) {
-        return generatorRepository.findGeneratorsByUserId(requesterId);
+        List<Generator> generators = generatorRepository.findAll();
+
+        List<Generator> myGenerators = new ArrayList<>();
+
+        if (generators != null) {
+            for (Generator generator : generators) {
+                if (generator.getUser().id.equals(requesterId) || generator.getParticipants().stream().anyMatch(p -> p.getUser().id.equals(requesterId))) {
+                    myGenerators.add(generator);
+                }
+            }
+        }
+
+        return myGenerators;
     }
 
     public void addGenerator(Generator generator, Long requesterId) throws GeneratorServiceException, UserServiceException {
