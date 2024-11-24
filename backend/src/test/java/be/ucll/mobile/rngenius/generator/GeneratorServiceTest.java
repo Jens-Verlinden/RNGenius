@@ -147,7 +147,7 @@ public class GeneratorServiceTest {
         // given
         List<Generator> generators = new ArrayList<>();
         generators.add(generator);
-        when(generatorRepository.findGeneratorsByUserId(user1.id)).thenReturn(generators);
+        when(generatorRepository.findAll()).thenReturn(generators);
 
         // when
         List<Generator> foundGenerators = generatorService.getMyGenerators(user1.id);
