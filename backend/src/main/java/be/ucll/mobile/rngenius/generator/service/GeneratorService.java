@@ -310,6 +310,8 @@ public class GeneratorService {
             }
         }
 
+        results.sort((r1, r2) -> r2.id.compareTo(r1.id));
+
         return results;
     }
 
