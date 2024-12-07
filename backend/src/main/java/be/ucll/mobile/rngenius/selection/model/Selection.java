@@ -1,20 +1,15 @@
 package be.ucll.mobile.rngenius.selection.model;
 
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import be.ucll.mobile.rngenius.option.model.Option;
 import be.ucll.mobile.rngenius.participant.model.Participant;
-import be.ucll.mobile.rngenius.result.model.Result;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 
 @Entity(name = "selections")
 public class Selection {
@@ -35,9 +30,6 @@ public class Selection {
     @JoinColumn(name = "option_id")
     private Option option;
 
-    @OneToMany(mappedBy = "selection", cascade = CascadeType.REMOVE)
-    private List<Result> results;
-
     public Selection() {}
 
     public boolean getFavorised() {
@@ -57,11 +49,6 @@ public class Selection {
         return option;
     }
 
-    @JsonIgnore
-    public List<Result> getResults() {
-        return results;
-    }
-
     public void setFavorised(boolean favorised) {
         this.favorised = favorised;
     }
@@ -76,9 +63,5 @@ public class Selection {
 
     public void setOption(Option option) {
         this.option = option;
-    }
-
-    public void setResults(List<Result> results) {
-        this.results = results;
     }
 }

@@ -163,7 +163,7 @@ public class GeneratorService {
         }
     }
 
-    public Option generateOption(Long generatorId, Long requesterId) throws GeneratorServiceException, GeneratorServiceAuthorizationException {
+    public Option generateOption(Long generatorId, Long requesterId) throws GeneratorServiceException, GeneratorServiceAuthorizationException, UserServiceException {
         Generator generator = getGeneratorById(generatorId, requesterId);
 
         List<Option> options = generator.getOptions();
@@ -201,7 +201,9 @@ public class GeneratorService {
         Option generatedResult = validOptions.get(randomIndex);
 
         Result result = new Result();
-        result.setSelection(getSelectionByParticipantUserIdAndOptionId(requesterId, generatedResult.id));
+        result.setUser(userService.getUserById(requesterId));
+        result.setOption(generatedResult);
+        result.setGeneratorId(generatorId);
         resultRepository.save(result);
 
         return generatedResult;
