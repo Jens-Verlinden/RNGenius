@@ -1,7 +1,8 @@
 package be.ucll.mobile.rngenius.result.model;
 
 import java.time.LocalDateTime;
-import be.ucll.mobile.rngenius.selection.model.Selection;
+import be.ucll.mobile.rngenius.option.model.Option;
+import be.ucll.mobile.rngenius.user.model.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,9 +19,15 @@ public class Result {
 
     LocalDateTime dateTime = LocalDateTime.now();
 
+    Long generatorId;
+
     @ManyToOne
-    @JoinColumn(name = "selection_id")
-    private Selection selection;
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "option_id")
+    private Option option;
 
     public Result() {}
 
@@ -28,15 +35,31 @@ public class Result {
         return dateTime;
     }
 
-    public Selection getSelection() {
-        return selection;
+    public Long getGeneratorId() {
+        return generatorId;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public Option getOption() {
+        return option;
     }
 
     public void setDateTime(LocalDateTime dateTime) {
         this.dateTime = dateTime;
     }
 
-    public void setSelection(Selection selection) {
-        this.selection = selection;
+    public void setGeneratorId(Long generatorId) {
+        this.generatorId = generatorId;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setOption(Option option) {
+        this.option = option;
     }
 }

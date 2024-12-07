@@ -3,6 +3,7 @@ package be.ucll.mobile.rngenius.option.model;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import be.ucll.mobile.rngenius.generator.model.Generator;
+import be.ucll.mobile.rngenius.result.model.Result;
 import be.ucll.mobile.rngenius.selection.model.Selection;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.ElementCollection;
@@ -40,6 +41,9 @@ public class Option {
     @OneToMany(mappedBy = "option", cascade = CascadeType.REMOVE)
     private List<Selection> selections;
 
+    @OneToMany(mappedBy = "option", cascade = CascadeType.REMOVE)
+    private List<Result> results;
+
     public Option(String name, List<String> categories, String description) {
         this.name = name;
         this.categories = categories;
@@ -70,6 +74,10 @@ public class Option {
         return selections;
     }
 
+    @JsonIgnore List<Result> getResults() {
+        return results;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -96,5 +104,9 @@ public class Option {
 
     public void setSelections(List<Selection> selections) {
         this.selections = selections;
+    }
+
+    public void setResults(List<Result> results) {
+        this.results = results;
     }
 }
