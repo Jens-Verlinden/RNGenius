@@ -7,37 +7,49 @@ import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
+import be.ucll.mobile.rngenius.option.model.Option;
 import be.ucll.mobile.rngenius.result.model.Result;
-import be.ucll.mobile.rngenius.selection.model.Selection;
+import be.ucll.mobile.rngenius.user.model.User;
 
 public class ResultTest {
 
     Result result;
-    Selection selection;
+    Option option;
+    User user;
 
     @BeforeEach
     public void setUp() {
         result = new Result();
-        selection = new Selection();
-        result.setSelection(selection);
+        option = new Option();
+        user = new User();
+
+        result.setOption(option);
+        result.setUser(user);
+        result.setGeneratorId(1L);
     }
 
     @Test
     void givenValidValues_whenCreatingResult_thenResultIsCreated() {
         assertNotNull(result);
         assertNotNull(result.getDateTime());
-        assertEquals(selection, result.getSelection());
+        assertEquals(result.getUser(), user);
+        assertEquals(result.getOption(), option);
+        assertEquals(result.getGeneratorId(), 1L);
     }
 
     @Test
     void givenNewValues_whenSettingResultProperties_thenPropertiesAreUpdated() {
         LocalDateTime newDateTime = LocalDateTime.now().plusDays(1);
-        Selection newSelection = new Selection();
+        Option newOption = new Option();
+        User newUser = new User();
         result.setDateTime(newDateTime);
-        result.setSelection(newSelection);
+        result.setOption(newOption);
+        result.setUser(newUser);
+        result.setGeneratorId(2L);
 
         assertEquals(newDateTime, result.getDateTime());
-        assertEquals(newSelection, result.getSelection());
+        assertEquals(newOption, result.getOption());
+        assertEquals(newUser, result.getUser());
+        assertEquals(2L, result.getGeneratorId());
     }
 }
