@@ -91,7 +91,7 @@ public class GeneratorRestController {
     }   
 
     @GetMapping("/generate/{id}")
-    public Option generate(@PathVariable Long id, @RequestHeader("Authorization") String token) throws GeneratorServiceException, GeneratorException, GeneratorServiceAuthorizationException {
+    public Option generate(@PathVariable Long id, @RequestHeader("Authorization") String token) throws GeneratorServiceException, GeneratorException, GeneratorServiceAuthorizationException, UserServiceException {
         Long requesterId = jwtUtil.retrieveRequesterId(token);
         return generatorService.generateOption(id, requesterId);
     }

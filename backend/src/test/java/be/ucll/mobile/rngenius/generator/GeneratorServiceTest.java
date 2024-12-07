@@ -343,7 +343,6 @@ public class GeneratorServiceTest {
         when(generatorRepository.findGeneratorById(generator.id)).thenReturn(generator);
         when(selectionRepository.findSelectionsByOptionId(option1.id)).thenReturn(List.of(selection1));
         when(selectionRepository.findSelectionsByOptionId(option2.id)).thenReturn(List.of(selection2));
-        when(selectionRepository.findSelectionByParticipantUserIdAndOptionId(user1.id, option1.id)).thenReturn(selection1);
         when(resultRepository.save(any(Result.class))).thenReturn(new Result());
 
         // when
@@ -552,7 +551,9 @@ public class GeneratorServiceTest {
         // given
         participant1.setNotifications(true);
         Result result = new Result();
-        result.setSelection(selection1);
+        result.setUser(user1);
+        result.setGeneratorId(generator.id);
+        result.setOption(option1);
         when(participantRepository.findParticipantsByUserId(user1.id)).thenReturn(List.of(participant1));
         when(resultRepository.findResultsByGeneratorId(generator.id)).thenReturn(List.of(result));
 

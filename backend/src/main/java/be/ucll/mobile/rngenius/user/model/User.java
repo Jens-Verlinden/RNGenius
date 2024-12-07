@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import be.ucll.mobile.rngenius.generator.model.Generator;
 import be.ucll.mobile.rngenius.participant.model.Participant;
+import be.ucll.mobile.rngenius.result.model.Result;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -42,6 +43,9 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Participant> participants;
+
+    @OneToMany(mappedBy = "user")
+    private List<Result> results;
 
     public User(String firstName, String lastName, String email, String password) throws UserException {
         this.firstName = firstName;
@@ -83,6 +87,11 @@ public class User {
     @JsonIgnore
     public List<Participant> getParticipants() {
         return participants;
+    }
+
+    @JsonIgnore
+    public List<Result> getResults() {
+        return results;
     }
 
     public void setFirstName(String firstName) {
@@ -143,5 +152,9 @@ public class User {
 
     public void setParticipants(List<Participant> participants) {
         this.participants = participants;
+    }
+
+    public void setResults(List<Result> results) {
+        this.results = results;
     }
 }
