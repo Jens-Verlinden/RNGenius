@@ -10,6 +10,8 @@ import be.ucll.mobile.rngenius.option.model.Option;
 import be.ucll.mobile.rngenius.option.repo.OptionRepository;
 import be.ucll.mobile.rngenius.participant.model.Participant;
 import be.ucll.mobile.rngenius.participant.repo.ParticipantRepository;
+import be.ucll.mobile.rngenius.result.model.Result;
+import be.ucll.mobile.rngenius.result.repo.ResultRepository;
 import be.ucll.mobile.rngenius.selection.model.Selection;
 import be.ucll.mobile.rngenius.selection.repo.SelectionRepository;
 import be.ucll.mobile.rngenius.user.model.User;
@@ -32,6 +34,9 @@ public class GeneratorService {
 
     @Autowired
     private SelectionRepository selectionRepository;
+
+    @Autowired
+    private ResultRepository resultRepository;
 
     @Autowired
     private UserService userService;
@@ -83,7 +88,6 @@ public class GeneratorService {
         participant.setGenerator(generator);
         participant.setUser(generator.getUser());
         participantRepository.save(participant);
-
     }
 
     public void updateGenerator(Long id, Generator generator, Long requesterId) throws GeneratorServiceException, GeneratorServiceAuthorizationException, UserServiceException {
@@ -194,7 +198,14 @@ public class GeneratorService {
 
         int randomIndex = (int) (Math.random() * validOptions.size());
 
-        return validOptions.get(randomIndex);
+        Option generatedResult = validOptions.get(randomIndex);
+
+        Result result = new Result();
+        result.setSelection(getSelectionByParticipantUserIdAndOptionId(requesterId, generatedResult.id));
+        resultRepository.save(result);
+
+        return generatedResult;
+
     }
     
     public void favoriseOption(Long optionId, Long requesterId) throws GeneratorServiceException, GeneratorServiceAuthorizationException {
@@ -274,6 +285,34 @@ public class GeneratorService {
         Participant participant = participantRepository.findParticipantByUserIdAndGeneratorId(requesterId, generatorId);
 
         participantRepository.delete(participant);
+    }
+
+    public void toggleNotifications(Long generatorId, Long requesterId) throws GeneratorServiceException, GeneratorServiceAuthorizationException {
+        Participant participant = participantRepository.findParticipantByUserIdAndGeneratorId(requesterId, generatorId);
+
+        if (participant == null) {
+            throw new GeneratorServiceException("participant", "Participant not found in this generator");
+        }
+
+        participant.setNotifications(!participant.getNotifications());
+        participantRepository.save(participant);
+    }
+
+    public List<Result> getMyNotifiedResults(Long requesterId) {
+        List<Result> results = new ArrayList<>();
+        List<Participant> participants = participantRepository.findParticipantsByUserId(requesterId);
+
+        for (Participant participant : participants) {
+            if (participant.getNotifications()) {
+                for (Result result : resultRepository.findResultsByGeneratorId(participant.getGenerator().id)) {
+                    results.add(result);
+                }
+            }
+        }
+
+        results.sort((r1, r2) -> r2.id.compareTo(r1.id));
+
+        return results;
     }
 
     private Option getOptionById(Long optionId) throws GeneratorServiceException {

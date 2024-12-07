@@ -22,6 +22,8 @@ public class Participant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
+
+    boolean notifications;
     
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -34,7 +36,13 @@ public class Participant {
     @OneToMany(mappedBy = "participant", cascade = CascadeType.REMOVE)
     private List<Selection> selections;
 
-    public Participant() {}
+    public Participant() {
+        this.notifications = false;
+    }
+
+    public boolean getNotifications() {
+        return notifications;
+    }
 
     public User getUser() {
         return user;
@@ -47,6 +55,10 @@ public class Participant {
 
     public List<Selection> getSelections() {
         return selections;
+    }
+
+    public void setNotifications(boolean notifications) {
+        this.notifications = notifications;
     }
 
     public void setUser(User user) {

@@ -27,6 +27,7 @@ import be.ucll.mobile.rngenius.generator.service.GeneratorService;
 import be.ucll.mobile.rngenius.generator.service.GeneratorServiceAuthorizationException;
 import be.ucll.mobile.rngenius.generator.service.GeneratorServiceException;
 import be.ucll.mobile.rngenius.option.model.Option;
+import be.ucll.mobile.rngenius.result.model.Result;
 import be.ucll.mobile.rngenius.user.model.UserException;
 import be.ucll.mobile.rngenius.user.service.UserServiceException;
 import jakarta.validation.Valid;
@@ -128,6 +129,19 @@ public class GeneratorRestController {
         Long requesterId = jwtUtil.retrieveRequesterId(token);
         generatorService.leaveGenerator(generatorId, requesterId);
         return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("toggleNotifications/{generatorId}")
+    public ResponseEntity<String> toggleNotifications(@PathVariable Long generatorId, @RequestHeader("Authorization") String token) throws GeneratorServiceException, GeneratorServiceAuthorizationException {
+        Long requesterId = jwtUtil.retrieveRequesterId(token);
+        generatorService.toggleNotifications(generatorId, requesterId);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/myResults")
+    public List<Result> getMyResults(@RequestHeader("Authorization") String token) throws GeneratorServiceException {
+        Long requesterId = jwtUtil.retrieveRequesterId(token);
+        return generatorService.getMyNotifiedResults(requesterId);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

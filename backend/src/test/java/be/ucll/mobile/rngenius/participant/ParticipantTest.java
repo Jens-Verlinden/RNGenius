@@ -2,6 +2,8 @@ package be.ucll.mobile.rngenius.participant;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,6 +29,7 @@ public class ParticipantTest {
         participant.setUser(user);
         participant.setGenerator(generator);
         participant.setSelections(selections);
+        participant.setNotifications(false);
     }
 
     @Test
@@ -35,6 +38,7 @@ public class ParticipantTest {
         assertEquals(user, participant.getUser());
         assertEquals(generator, participant.getGenerator());
         assertEquals(selections, participant.getSelections());
+        assertFalse(participant.getNotifications());
     }
 
     @Test
@@ -45,9 +49,11 @@ public class ParticipantTest {
         participant.setUser(newUser);
         participant.setGenerator(newGenerator);
         participant.setSelections(newSelections);
+        participant.setNotifications(true);
 
         assertEquals(newUser, participant.getUser());
         assertEquals(newGenerator, participant.getGenerator());
         assertEquals(newSelections, participant.getSelections());
+        assertTrue(participant.getNotifications());
     }
 }

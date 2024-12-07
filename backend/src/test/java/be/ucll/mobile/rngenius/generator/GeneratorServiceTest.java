@@ -25,6 +25,8 @@ import be.ucll.mobile.rngenius.option.model.Option;
 import be.ucll.mobile.rngenius.option.repo.OptionRepository;
 import be.ucll.mobile.rngenius.participant.model.Participant;
 import be.ucll.mobile.rngenius.participant.repo.ParticipantRepository;
+import be.ucll.mobile.rngenius.result.model.Result;
+import be.ucll.mobile.rngenius.result.repo.ResultRepository;
 import be.ucll.mobile.rngenius.selection.model.Selection;
 import be.ucll.mobile.rngenius.selection.repo.SelectionRepository;
 import be.ucll.mobile.rngenius.user.model.User;
@@ -44,6 +46,9 @@ public class GeneratorServiceTest {
 
     @Mock
     private SelectionRepository selectionRepository;
+
+    @Mock
+    private ResultRepository resultRepository;
 
     @Mock
     private UserService userService;
@@ -338,6 +343,8 @@ public class GeneratorServiceTest {
         when(generatorRepository.findGeneratorById(generator.id)).thenReturn(generator);
         when(selectionRepository.findSelectionsByOptionId(option1.id)).thenReturn(List.of(selection1));
         when(selectionRepository.findSelectionsByOptionId(option2.id)).thenReturn(List.of(selection2));
+        when(selectionRepository.findSelectionByParticipantUserIdAndOptionId(user1.id, option1.id)).thenReturn(selection1);
+        when(resultRepository.save(any(Result.class))).thenReturn(new Result());
 
         // when
         Option generatedOption = generatorService.generateOption(generator.id, user1.id);
@@ -345,6 +352,7 @@ public class GeneratorServiceTest {
         // then
         assertNotNull(generatedOption);
         assertEquals(option1.id, generatedOption.id);
+        verify(resultRepository, times(1)).save(any(Result.class));
     }
 
     @Test
@@ -511,6 +519,66 @@ public class GeneratorServiceTest {
         assertEquals("You cannot leave your own generator", ex.getMessage());
     }
 
+    
+    @Test
+    void givenValidGeneratorIdAndRequesterId_whenTogglingNotifications_thenNotificationsToggled() throws Exception {
+        // given
+        when(participantRepository.findParticipantByUserIdAndGeneratorId(user1.id, generator.id)).thenReturn(participant1);
+        boolean initialNotificationStatus = participant1.getNotifications();
+
+        // when
+        generatorService.toggleNotifications(generator.id, user1.id);
+
+        // then
+        verify(participantRepository, times(1)).save(participant1);
+        assertEquals(!initialNotificationStatus, participant1.getNotifications());
+    }
+
+    @Test
+    void givenNonExistentParticipant_whenTogglingNotifications_thenGeneratorServiceExceptionIsThrown() {
+        // given
+        when(participantRepository.findParticipantByUserIdAndGeneratorId(user1.id, generator.id)).thenReturn(null);
+
+        // when
+        GeneratorServiceException ex = assertThrows(GeneratorServiceException.class, () -> generatorService.toggleNotifications(generator.id, user1.id));
+
+        // then
+        assertEquals("participant", ex.getField());
+        assertEquals("Participant not found in this generator", ex.getMessage());
+    }
+
+    @Test
+    void givenValidRequesterId_whenGettingMyNotifiedResults_thenResultsReturned() {
+        // given
+        participant1.setNotifications(true);
+        Result result = new Result();
+        result.setSelection(selection1);
+        when(participantRepository.findParticipantsByUserId(user1.id)).thenReturn(List.of(participant1));
+        when(resultRepository.findResultsByGeneratorId(generator.id)).thenReturn(List.of(result));
+
+        // when
+        List<Result> results = generatorService.getMyNotifiedResults(user1.id);
+
+        // then
+        assertNotNull(results);
+        assertEquals(1, results.size());
+        assertEquals(result, results.get(0));
+    }
+
+    @Test
+    void givenValidRequesterId_whenGettingMyNotifiedResultsWithNoNotifications_thenEmptyResultsReturned() {
+        // given
+        participant1.setNotifications(false);
+        when(participantRepository.findParticipantsByUserId(user1.id)).thenReturn(List.of(participant1));
+
+        // when
+        List<Result> results = generatorService.getMyNotifiedResults(user1.id);
+
+        // then
+        assertNotNull(results);
+        assertTrue(results.isEmpty());
+    }
+
     @Test
     void givenValidOptionId_whenGettingOptionById_thenOptionReturned() throws Exception {
         // given
@@ -573,5 +641,5 @@ public class GeneratorServiceTest {
         assertEquals(GeneratorServiceException.class, ex.getTargetException().getClass());
         assertEquals("selection", ((GeneratorServiceException) ex.getTargetException()).getField());
         assertEquals("No selection with this participant and option", ex.getTargetException().getMessage());
-    }
+    }    
 }
