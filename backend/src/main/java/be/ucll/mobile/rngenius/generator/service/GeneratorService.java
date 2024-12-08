@@ -158,7 +158,6 @@ public class GeneratorService {
         if (option.getCategories().isEmpty()) {
             optionRepository.delete(option);
         } else {
-            System.out.println(option.getCategories());
             optionRepository.save(option);
         }
     }
