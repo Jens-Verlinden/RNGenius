@@ -87,7 +87,6 @@ public class UserService {
         try {
             user.setRefreshToken(encrypt(refreshToken));
         } catch (Exception e) {
-            System.out.println(e);
             throw new UserServiceException("refreshToken", "Error encrypting refresh token");
         }
         
