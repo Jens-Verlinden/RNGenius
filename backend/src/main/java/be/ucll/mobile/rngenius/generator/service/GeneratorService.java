@@ -162,6 +162,16 @@ public class GeneratorService {
         }
     }
 
+    public void purgeGeneratorOption(Long optionId, Long requesterId) throws GeneratorServiceException, GeneratorServiceAuthorizationException {
+        Option option = getOptionById(optionId);
+
+        if (!option.getGenerator().getUser().id.equals(requesterId)) {
+            throw new GeneratorServiceAuthorizationException("option", "You are not authorized to delete this option");
+        }
+
+        optionRepository.delete(option);
+    }
+    
     public Option generateOption(Long generatorId, Long requesterId) throws GeneratorServiceException, GeneratorServiceAuthorizationException, UserServiceException {
         Generator generator = getGeneratorById(generatorId, requesterId);
 
@@ -314,6 +324,64 @@ public class GeneratorService {
         results.sort((r1, r2) -> r2.id.compareTo(r1.id));
 
         return results;
+    }
+
+    public void prioritiseCategory(Long generatorId, String category, Long requesterId) throws GeneratorServiceException, GeneratorServiceAuthorizationException {
+        Generator generator = getGeneratorById(generatorId, requesterId);
+        List<Option> options = generator.getOptions();
+        boolean allFavorised = true;
+
+        for (Option option : options) {
+            if (option.getCategories().contains(category)) {
+                Selection selection = selectionRepository.findSelectionByParticipantUserIdAndOptionId(requesterId, option.id);
+                if (!selection.getFavorised()) {
+                    allFavorised = false;
+                    break;
+                }
+            }
+        }
+
+        for (Option option : options) {
+            if (option.getCategories().contains(category)) {
+                Selection selection = selectionRepository.findSelectionByParticipantUserIdAndOptionId(requesterId, option.id);
+                if (allFavorised) {
+                    selection.setFavorised(false);
+                } else {
+                    selection.setFavorised(true);
+                    selection.setExcluded(false);
+                }
+                selectionRepository.save(selection);
+            }
+        }
+    }
+
+    public void excludeCategory(Long generatorId, String category, Long requesterId) throws GeneratorServiceException, GeneratorServiceAuthorizationException {
+        Generator generator = getGeneratorById(generatorId, requesterId);
+        List<Option> options = generator.getOptions();
+        boolean allExcluded = true;
+
+        for (Option option : options) {
+            if (option.getCategories().contains(category)) {
+                Selection selection = selectionRepository.findSelectionByParticipantUserIdAndOptionId(requesterId, option.id);
+                if (!selection.getExcluded()) {
+                    allExcluded = false;
+                    break;
+                }
+            }
+        }
+
+        for (Option option : options) {
+            if (option.getCategories().contains(category)) {
+                Selection selection = selectionRepository.findSelectionByParticipantUserIdAndOptionId(requesterId, option.id);
+                if (allExcluded) {
+                    selection.setExcluded(false);
+                } else {
+                    selection.setExcluded(true);
+                    selection.setFavorised(false);
+                }
+                selectionRepository.save(selection);
+            }
+        }
     }
 
     private Option getOptionById(Long optionId) throws GeneratorServiceException {

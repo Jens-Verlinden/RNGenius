@@ -90,6 +90,13 @@ public class GeneratorRestController {
         return ResponseEntity.ok().build();
     }   
 
+    @DeleteMapping("/purgeOption/{optionId}")
+    public ResponseEntity<String> deleteOption(@PathVariable Long optionId, @RequestHeader("Authorization") String token) throws GeneratorServiceException, GeneratorServiceAuthorizationException {
+        Long requesterId = jwtUtil.retrieveRequesterId(token);
+        generatorService.purgeGeneratorOption(optionId, requesterId);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/generate/{id}")
     public Option generate(@PathVariable Long id, @RequestHeader("Authorization") String token) throws GeneratorServiceException, GeneratorException, GeneratorServiceAuthorizationException, UserServiceException {
         Long requesterId = jwtUtil.retrieveRequesterId(token);
@@ -142,6 +149,20 @@ public class GeneratorRestController {
     public List<Result> getMyResults(@RequestHeader("Authorization") String token) throws GeneratorServiceException {
         Long requesterId = jwtUtil.retrieveRequesterId(token);
         return generatorService.getMyNotifiedResults(requesterId);
+    }
+
+    @PutMapping("/favoriseCategory/{generatorId}")
+    public ResponseEntity<String> prioritiseCategory(@PathVariable Long generatorId, @RequestParam String category, @RequestHeader("Authorization") String token) throws GeneratorServiceException, GeneratorServiceAuthorizationException {
+        Long requesterId = jwtUtil.retrieveRequesterId(token);
+        generatorService.prioritiseCategory(generatorId, category, requesterId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/excludeCategory/{generatorId}")
+    public ResponseEntity<String> excludeCategory(@PathVariable Long generatorId, @RequestParam String category, @RequestHeader("Authorization") String token) throws GeneratorServiceException, GeneratorServiceAuthorizationException {
+        Long requesterId = jwtUtil.retrieveRequesterId(token);
+        generatorService.excludeCategory(generatorId, category, requesterId);
+        return ResponseEntity.ok().build();
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
