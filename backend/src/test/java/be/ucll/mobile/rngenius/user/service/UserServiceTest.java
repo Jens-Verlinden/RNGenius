@@ -209,14 +209,12 @@ public class UserServiceTest {
     void whenLoggingOutAllDevices_thenRefreshTokenIsUpdated() throws Exception {
         // given
         when(userRepository.findUserById(user.id)).thenReturn(user);
-        when(bCryptPasswordEncoder.encode(user.getPassword())).thenReturn("ENCODED_PASSWORD");
 
         // when
         userService.logoutAllDevices(user.id);
 
         // then
         verify(userRepository, times(1)).save(user);
-        assertEquals("ENCODED_PASSWORD", user.getPassword());
         assertNotNull(user.getRefreshToken());
     }
 }

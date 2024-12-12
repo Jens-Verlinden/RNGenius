@@ -94,7 +94,7 @@ public class AuthRestController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/logout")
+    @PutMapping("/logoutAllDevices")
     public ResponseEntity<String> logoutAllDevices(@RequestHeader("Authorization") String token) throws UserServiceException {
         Long requesterId = jwtUtil.retrieveRequesterId(token);
         userService.logoutAllDevices(requesterId);
