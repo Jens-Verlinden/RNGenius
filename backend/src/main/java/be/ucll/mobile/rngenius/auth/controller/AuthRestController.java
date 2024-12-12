@@ -94,6 +94,13 @@ public class AuthRestController {
         return ResponseEntity.ok().build();
     }
 
+    @PutMapping("/logout")
+    public ResponseEntity<String> logoutAllDevices(@RequestHeader("Authorization") String token) throws UserServiceException {
+        Long requesterId = jwtUtil.retrieveRequesterId(token);
+        userService.logoutAllDevices(requesterId);
+        return ResponseEntity.ok().build();
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({ MethodArgumentNotValidException.class})
     public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {

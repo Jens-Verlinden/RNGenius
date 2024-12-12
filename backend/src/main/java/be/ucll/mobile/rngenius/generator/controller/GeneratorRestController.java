@@ -90,6 +90,13 @@ public class GeneratorRestController {
         return ResponseEntity.ok().build();
     }   
 
+    @DeleteMapping("/purgeOption/{optionId}")
+    public ResponseEntity<String> deleteOption(@PathVariable Long optionId, @RequestHeader("Authorization") String token) throws GeneratorServiceException, GeneratorServiceAuthorizationException {
+        Long requesterId = jwtUtil.retrieveRequesterId(token);
+        generatorService.purgeGeneratorOption(optionId, requesterId);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/generate/{id}")
     public Option generate(@PathVariable Long id, @RequestHeader("Authorization") String token) throws GeneratorServiceException, GeneratorException, GeneratorServiceAuthorizationException, UserServiceException {
         Long requesterId = jwtUtil.retrieveRequesterId(token);
