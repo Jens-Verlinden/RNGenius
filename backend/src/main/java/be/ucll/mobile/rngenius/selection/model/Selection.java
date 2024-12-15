@@ -1,9 +1,8 @@
 package be.ucll.mobile.rngenius.selection.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import be.ucll.mobile.rngenius.option.model.Option;
 import be.ucll.mobile.rngenius.participant.model.Participant;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,55 +12,55 @@ import jakarta.persistence.ManyToOne;
 
 @Entity(name = "selections")
 public class Selection {
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
 
-    boolean favorised;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  public Long id;
 
-    boolean excluded;
+  boolean favorised;
 
-    @ManyToOne
-    @JoinColumn(name = "participant_id")
-    private Participant participant;
-    
-    @ManyToOne
-    @JoinColumn(name = "option_id")
-    private Option option;
+  boolean excluded;
 
-    public Selection() {}
+  @ManyToOne
+  @JoinColumn(name = "participant_id")
+  private Participant participant;
 
-    public boolean getFavorised() {
-        return favorised;
-    }
+  @ManyToOne
+  @JoinColumn(name = "option_id")
+  private Option option;
 
-    public boolean getExcluded() {
-        return excluded;
-    }
+  public Selection() {}
 
-    @JsonIgnore
-    public Participant getParticipant() {
-        return participant;
-    }
+  public boolean getFavorised() {
+    return favorised;
+  }
 
-    public Option getOption() {
-        return option;
-    }
+  public boolean getExcluded() {
+    return excluded;
+  }
 
-    public void setFavorised(boolean favorised) {
-        this.favorised = favorised;
-    }
+  @JsonIgnore
+  public Participant getParticipant() {
+    return participant;
+  }
 
-    public void setExcluded(boolean excluded) {
-        this.excluded = excluded;
-    }
+  public Option getOption() {
+    return option;
+  }
 
-    public void setParticipant(Participant participant) {
-        this.participant = participant;
-    }
+  public void setFavorised(boolean favorised) {
+    this.favorised = favorised;
+  }
 
-    public void setOption(Option option) {
-        this.option = option;
-    }
+  public void setExcluded(boolean excluded) {
+    this.excluded = excluded;
+  }
+
+  public void setParticipant(Participant participant) {
+    this.participant = participant;
+  }
+
+  public void setOption(Option option) {
+    this.option = option;
+  }
 }

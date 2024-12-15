@@ -1,6 +1,5 @@
 package be.ucll.mobile.rngenius.generator.model;
 
-import java.util.List;
 import be.ucll.mobile.rngenius.option.model.Option;
 import be.ucll.mobile.rngenius.participant.model.Participant;
 import be.ucll.mobile.rngenius.user.model.User;
@@ -14,74 +13,75 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
+import java.util.List;
 
 @Entity(name = "generators")
 public class Generator {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  public long id;
 
-    @NotBlank(message = "Title is required")
-    private String title;
+  @NotBlank(message = "Title is required")
+  private String title;
 
-    @Positive(message = "Icon number must be a positive number")
-    private int iconNumber;
+  @Positive(message = "Icon number must be a positive number")
+  private int iconNumber;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+  @ManyToOne
+  @JoinColumn(name = "user_id")
+  private User user;
 
-    @OneToMany(mappedBy = "generator", cascade = CascadeType.REMOVE)
-    private List<Option> options;
+  @OneToMany(mappedBy = "generator", cascade = CascadeType.REMOVE)
+  private List<Option> options;
 
-    @OneToMany(mappedBy = "generator", cascade = CascadeType.REMOVE)
-    private List<Participant> participants;
+  @OneToMany(mappedBy = "generator", cascade = CascadeType.REMOVE)
+  private List<Participant> participants;
 
-    public Generator(String title, int iconNumber) {
-        this.title = title;
-        this.iconNumber = iconNumber;
-    }
+  public Generator(String title, int iconNumber) {
+    this.title = title;
+    this.iconNumber = iconNumber;
+  }
 
-    public Generator() {}
+  public Generator() {}
 
-    public String getTitle() {
-        return title;
-    }
+  public String getTitle() {
+    return title;
+  }
 
-    public int getIconNumber() {
-        return iconNumber;
-    }
+  public int getIconNumber() {
+    return iconNumber;
+  }
 
-    public User getUser() {
-        return user;
-    }
+  public User getUser() {
+    return user;
+  }
 
-    public List<Option> getOptions() {
-        return options;
-    }
+  public List<Option> getOptions() {
+    return options;
+  }
 
-    public List<Participant> getParticipants() {
-        return participants;
-    }
+  public List<Participant> getParticipants() {
+    return participants;
+  }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+  public void setTitle(String title) {
+    this.title = title;
+  }
 
-    public void setIconNumber(int iconNumber) {
-        this.iconNumber = iconNumber;
-    }
+  public void setIconNumber(int iconNumber) {
+    this.iconNumber = iconNumber;
+  }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+  public void setUser(User user) {
+    this.user = user;
+  }
 
-    public void setOptions(List<Option> options) {
-        this.options = options;
-    }
+  public void setOptions(List<Option> options) {
+    this.options = options;
+  }
 
-    public void setParticipants(List<Participant> participants) {
-        this.participants = participants;
-    }
+  public void setParticipants(List<Participant> participants) {
+    this.participants = participants;
+  }
 }

@@ -11,21 +11,24 @@ import jakarta.validation.constraints.NotBlank;
 @Entity
 @Table(name = "greetings")
 public class Greeting {
-    @GeneratedValue(strategy=GenerationType.AUTO, generator = "greeting_generator")
-    @SequenceGenerator(name = "greeting_generator", sequenceName = "greetings_seq", allocationSize = 1)
-    @Id
-    public long id;
+  @GeneratedValue(strategy = GenerationType.AUTO, generator = "greeting_generator")
+  @SequenceGenerator(
+      name = "greeting_generator",
+      sequenceName = "greetings_seq",
+      allocationSize = 1)
+  @Id
+  public long id;
 
-    @NotBlank(message = "Greeting may not be empty!")
-    private String message;
+  @NotBlank(message = "Greeting may not be empty!")
+  private String message;
 
-    public Greeting(String message) {
-        this.message = message;
-    }
+  public Greeting(String message) {
+    this.message = message;
+  }
 
-    public Greeting() {}
+  public Greeting() {}
 
-    public String getMessage () {
-        return message;
-    }
+  public String getMessage() {
+    return message;
+  }
 }

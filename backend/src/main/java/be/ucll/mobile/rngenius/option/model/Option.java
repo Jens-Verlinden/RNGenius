@@ -1,10 +1,9 @@
 package be.ucll.mobile.rngenius.option.model;
 
-import java.util.List;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import be.ucll.mobile.rngenius.generator.model.Generator;
 import be.ucll.mobile.rngenius.result.model.Result;
 import be.ucll.mobile.rngenius.selection.model.Selection;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
@@ -17,96 +16,98 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import java.util.List;
 
 @Entity(name = "options")
 public class Option {
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
 
-    @NotBlank(message = "Name is required")
-    private String name;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  public Long id;
 
-    @NotEmpty(message = "At least one category is required")
-    @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
-    private List<String> categories;
+  @NotBlank(message = "Name is required")
+  private String name;
 
-    private String description;
+  @NotEmpty(message = "At least one category is required")
+  @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
+  private List<String> categories;
 
-    @ManyToOne 
-    @JoinColumn(name = "generator_id")
-    private Generator generator;
-    
-    @OneToMany(mappedBy = "option", cascade = CascadeType.REMOVE)
-    private List<Selection> selections;
+  private String description;
 
-    @OneToMany(mappedBy = "option", cascade = CascadeType.REMOVE)
-    private List<Result> results;
+  @ManyToOne
+  @JoinColumn(name = "generator_id")
+  private Generator generator;
 
-    public Option(String name, List<String> categories, String description) {
-        this.name = name;
-        this.categories = categories;
-        this.description = description;
-    }
+  @OneToMany(mappedBy = "option", cascade = CascadeType.REMOVE)
+  private List<Selection> selections;
 
-    public Option() {}
+  @OneToMany(mappedBy = "option", cascade = CascadeType.REMOVE)
+  private List<Result> results;
 
-    public String getName() {
-        return name;
-    }
+  public Option(String name, List<String> categories, String description) {
+    this.name = name;
+    this.categories = categories;
+    this.description = description;
+  }
 
-    public List<String> getCategories() {
-        return categories;
-    }
+  public Option() {}
 
-    public String getDescription() {
-        return description;
-    }
+  public String getName() {
+    return name;
+  }
 
-    @JsonIgnore
-    public Generator getGenerator() {
-        return generator;
-    }
+  public List<String> getCategories() {
+    return categories;
+  }
 
-    @JsonIgnore
-    public List<Selection> getSelections() {
-        return selections;
-    }
+  public String getDescription() {
+    return description;
+  }
 
-    @JsonIgnore List<Result> getResults() {
-        return results;
-    }
+  @JsonIgnore
+  public Generator getGenerator() {
+    return generator;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  @JsonIgnore
+  public List<Selection> getSelections() {
+    return selections;
+  }
 
-    public void setCategories(List<String> categories) {
-        this.categories = categories;
-    }
+  @JsonIgnore
+  List<Result> getResults() {
+    return results;
+  }
 
-    public void addCategory(String category) {
-        this.categories.add(category);
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    public void removeCategory(String category) {
-        this.categories.remove(category);
-    }
+  public void setCategories(List<String> categories) {
+    this.categories = categories;
+  }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+  public void addCategory(String category) {
+    this.categories.add(category);
+  }
 
-    public void setGenerator(Generator generator) {
-        this.generator = generator;
-    }
+  public void removeCategory(String category) {
+    this.categories.remove(category);
+  }
 
-    public void setSelections(List<Selection> selections) {
-        this.selections = selections;
-    }
+  public void setDescription(String description) {
+    this.description = description;
+  }
 
-    public void setResults(List<Result> results) {
-        this.results = results;
-    }
+  public void setGenerator(Generator generator) {
+    this.generator = generator;
+  }
+
+  public void setSelections(List<Selection> selections) {
+    this.selections = selections;
+  }
+
+  public void setResults(List<Result> results) {
+    this.results = results;
+  }
 }
