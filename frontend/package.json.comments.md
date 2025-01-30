@@ -1,0 +1,13 @@
+- `name`: The name of the project
+- `main`: The main entry point for the project is the entry file of the Expo Router plugin which handles the detection and navigation of routes/pages, it will usually use the index.tsx file as the root of the project
+- `version`: The current version of the project
+- `scripts`:
+  - `start`: Command to start the Expo development server
+  - `android`: Command to start the Expo server and open the Android emulator
+  - `ios`: Command to start the Expo server and open the iOS simulator
+  - `web`: Command to start the Expo server and open the project in a web browser
+  - `test`: Command to run all Jest tests in watch mode
+- `jest`:
+  - `preset`: Jest configuration preset for Expo projects
+- `resolutions`: Use specific version of the type definitions for React components, hooks, ...
+- `private`: Indicates that this is a private project and should not be published to npm

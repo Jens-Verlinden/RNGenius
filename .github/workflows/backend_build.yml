@@ -1,7 +1,7 @@
 name: Build RNGenius Backend - Team 3
 on:
   workflow_dispatch:
-  
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -9,25 +9,25 @@ jobs:
     steps:
       - name: Retrieve source code
         uses: actions/checkout@v4
-        
+
       - name: Set up Java version
         uses: actions/setup-java@v1
         with:
-          java-version: '17'  
+          java-version: "17"
 
       - name: Add JWT secret
         run: |
-          echo "package be.ucll.mobile.rngenius.auth.jwt;
+          echo "package be.mobile.rngenius.auth.jwt;
 
           import org.springframework.stereotype.Component;
-          
+
           @Component
           public class Secret {
-          
+
               public static String getSecret () {
                   return \"${JWT_KEY}\";
               }
-          }" > backend/src/main/java/be/ucll/mobile/rngenius/auth/jwt/Secret.java
+          }" > backend/src/main/java/be/mobile/rngenius/auth/jwt/Secret.java
 
         env:
           JWT_KEY: ${{ secrets.JWT_KEY }}
@@ -60,4 +60,4 @@ jobs:
           cd backend
           mvn -DskipTests deploy
         env:
-          GITHUB_TOKEN: ${{ github.token }}         
+          GITHUB_TOKEN: ${{ github.token }}
